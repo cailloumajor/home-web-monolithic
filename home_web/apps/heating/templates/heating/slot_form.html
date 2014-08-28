@@ -1,0 +1,35 @@
+{% extends request.is_ajax|yesno:"heating/ajax_form_base.html,heating/heating_base.html" %}
+
+{% block content %}
+  <form action='{{ request.path }}' class="heating-form" id="slot-form" method="post">
+  {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="line" id="zone">
+      {{ form.zone.label_tag }}{{ form.zone }}{{ form.zone.errors }}
+    </div>
+    <div class="line" id="days">
+      {{ form.mon.label_tag }}{{ form.mon }}
+      {{ form.tue.label_tag }}{{ form.tue }}
+      {{ form.wed.label_tag }}{{ form.wed }}
+      {{ form.thu.label_tag }}{{ form.thu }}
+      {{ form.fri.label_tag }}{{ form.fri }}
+      {{ form.sat.label_tag }}{{ form.sat }}
+      {{ form.sun.label_tag }}{{ form.sun }}
+    </div>
+    <div class="line" id="times">
+      {{ form.start_time.label_tag }}{{ form.start_time }}
+      {{ form.end_time.label_tag }}{{ form.end_time }}
+      {{ form.start_time.errors }}
+      {{ form.end_time.errors }}
+    </div>
+    <div class="line" id="mode">
+      <label>{{ form.mode.label }}</label>
+      <span id="mode-choices">
+	{{ form.mode }}
+      </span>
+      {{ form.mode.errors }}
+    </div>
+    <input class="form-btn" type="submit">
+  </form>
+{% endblock %}
+

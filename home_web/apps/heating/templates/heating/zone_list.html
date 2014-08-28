@@ -1,0 +1,69 @@
+{% extends "heating/heating_base.html" %}
+
+{% block content %}
+  <div class="hide-if-js">
+  {% for z in zone_list %}
+    <div class="zone-slots" id='zone-slots-z{{ z.num }}'>
+      <h2>Zone {{ z.num }}&nbsp;
+        <span>{{ z.desc }}</span>
+        <a class="create-url" href='{% url 'new_slot' zone=z.num %}'>Nouveau créneau</a>
+      </h2>
+      <table class="slot-table">
+        {% if z.slot_set.count %}
+        <tr>
+          <th>Début</th><th>Fin</th><th>Lun</th><th>Mar</th><th>Mer</th>
+          <th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
+          <th>Mode<p class="expl">(Eco/Hors-gel/Arrêt)</p></th>
+        </tr>
+        {% endif %}
+        {% for d in z.slot_set.all %}
+        <tr class="slot-desc" id='pk-{{ d.pk }}'>
+          <td class="start_time">{{ d.start_time|time:'H:i' }}</td>
+          <td class="end_time">{{ d.end_time|time:'H:i' }}</td>
+          <td class="mon">{% if d.mon %}X{% endif %}</td>
+          <td class="tue">{% if d.tue %}X{% endif %}</td>
+          <td class="wed">{% if d.wed %}X{% endif %}</td>
+          <td class="thu">{% if d.thu %}X{% endif %}</td>
+          <td class="fri">{% if d.fri %}X{% endif %}</td>
+          <td class="sat">{% if d.sat %}X{% endif %}</td>
+          <td class="sun">{% if d.sun %}X{% endif %}</td>
+          <td class="mode">{{ d.mode }}</td>
+          <td class="urls">
+            <a class="edit-url" href='{% url 'update_slot' pk=d.pk %}'>Modifier</a>
+            <a class="del-url" href='{% url 'del_slot' pk=d.pk %}'>Supprimer</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="show-if-js hidden" id="zone-tabs">
+    <ul>
+      {% for z in zone_list %}
+      <li><a href='#tab-z{{ z.num }}'>Zone {{ z.num }}</a></li>
+      {% endfor %}
+    </ul>
+    {% for z in zone_list %}
+    <div id='tab-z{{ z.num }}'>
+      <h2>{{ z.desc }}</h2>
+      <canvas class="zone-canvas" id='can-z{{ z.num }}' height="235" width="1025">
+        <p class="unsup">Le navigateur ne supporte pas la balise &lt;canvas&gt; !</p>
+      </canvas>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="show-if-js hidden" id="del-zone">
+    <button id="del-btn">Suppression</button>
+    <div class="ui-widget ui-state-error ui-corner-all hidden" id="del-ind">
+      <p>
+	<span class="ui-icon ui-icon-alert"></span>
+	Mode suppression
+	<span class="ui-icon ui-icon-alert"></span>
+      </p>
+      <button id="nodel-btn">Annuler</button>
+    </div>
+  <div id="form-container">
+  </div>
+{% endblock %}
+    

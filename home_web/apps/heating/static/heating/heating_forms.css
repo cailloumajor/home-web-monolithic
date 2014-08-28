@@ -1,0 +1,81 @@
+.heating-form {
+    text-align: center;
+}
+
+#slot-form .line {
+    margin-bottom: 12px;
+}
+
+#slot-form label:not(.ui-button) {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#slot-form input[type="text"] {
+    text-align: center;
+}
+
+#id_zone {
+    width: 10px;
+}
+
+#days input, #times input {
+    margin-right: 10px;
+}
+
+#id_start_time, #id_end_time {
+    width: 35px;
+}
+
+#id_mode {
+    display: inline-block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#id_mode label {
+    font-weight: normal !important;
+}
+
+#id_mode li {
+    display: inline-block;
+}
+
+.heating-form .form-btn {
+    margin: 8px 20px 0;
+}
+
+#slot-form .error {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff9b9b;
+    border-radius: 2px;
+}
+
+#slot-form .error:hover {
+    border-width: 1px;
+    border-color: #ff3232;
+}
+
+#slot-form .errorlist {
+    color: red;
+    font-size: 0.9em;
+    font-weight: bold;
+    list-style-type: none;
+    margin: 5px 0 15px;
+    padding: 0;
+    text-transform: uppercase;
+}
+
+#times .errorlist:first-of-type:not(:only-of-type) {
+    margin-bottom: 0;
+}
+
+#times .errorlist:last-of-type:not(:only-of-type) {
+    margin-top: 0;
+}
+
+#slot-del-form h2 {
+    margin-top: 0;
+    padding: 10px;
+}
