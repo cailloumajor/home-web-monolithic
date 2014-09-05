@@ -99,9 +99,7 @@ var slots = {
         } else if (slots.groupName != 'add') {
 	    slots.callback = slots.del;
 	    form.load(layer.data.delURL);
-        } else {
-            alert('Ajout interdit en mode suppression');
-        }  
+        }
     },
     update: function(slotData) {
         slots.del();
