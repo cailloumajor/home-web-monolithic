@@ -97,8 +97,8 @@ var slots = {
             slots.callback = (slots.groupName == 'add') ? slots.draw : slots.update;
             form.load(layer.data.addUpdURL);
         } else if (slots.groupName != 'add') {
-	    slots.callback = slots.del;
-	    form.load(layer.data.delURL);
+            slots.callback = slots.del;
+            form.load(layer.data.delURL);
         }
     },
     update: function(slotData) {
@@ -124,32 +124,32 @@ var form = {
         });
     },
     init: function() {
-	var dialogTitle, dialogWidth;
-	switch (form.$that.attr('id')) {
-	case 'slot-form':
-	    dialogTitle = 'Ajout / modification de créneau';
-	    dialogWidth = 560;
-	    $('#mode-choices label').unwrap().unwrap().each(function() {
-		$(this).before($(this).children('input'));
+        var dialogTitle, dialogWidth;
+        switch (form.$that.attr('id')) {
+        case 'slot-form':
+            dialogTitle = 'Ajout / modification de créneau';
+            dialogWidth = 560;
+            $('#mode-choices label').unwrap().unwrap().each(function() {
+                $(this).before($(this).children('input'));
             });
-	    $('#days, #mode-choices').buttonset();
-	    $('#id_start_time, #id_end_time').attr('readonly', 'true').timepicker({
-		showPeriodLabels: false,
-		defaultTime: '',
-		hourText: 'Heures',
-		minuteText: 'Min.',
-		myPosition: 'center top',
-		atPosition: 'center bottom',
-		minutes: {interval: 15},
-	    });
-	    break;
-	case 'slot-del-form':
-	    dialogTitle = 'Suppression de créneau';
-	    dialogWidth = 300;
-	    $('#cancel-anchor').remove();
-	    $('#slot-del-form h2').addClass("ui-widget ui-state-highlight ui-corner-all");
-	    break;
-	}
+            $('#days, #mode-choices').buttonset();
+            $('#id_start_time, #id_end_time').attr('readonly', 'true').timepicker({
+                showPeriodLabels: false,
+                defaultTime: '',
+                hourText: 'Heures',
+                minuteText: 'Min.',
+                myPosition: 'center top',
+                atPosition: 'center bottom',
+                minutes: {interval: 15},
+            });
+            break;
+        case 'slot-del-form':
+            dialogTitle = 'Suppression de créneau';
+            dialogWidth = 300;
+            $('#cancel-anchor').remove();
+            $('#slot-del-form h2').addClass("ui-widget ui-state-highlight ui-corner-all");
+            break;
+        }
         $('<input>', {
             'class': 'form-btn',
             type: 'button',
@@ -165,41 +165,41 @@ var form = {
             modal: true,
             resizable: false,
             title: dialogTitle,
-	    width: dialogWidth,
+            width: dialogWidth,
         });
         $('.form-btn').button();
         form.$that.submit(form.submit);
     },   
     submit: function(event) {
         event.preventDefault();
-	$.post(form.$that.attr('action'), form.$that.serialize(), form.success).fail(form.fail);
+        $.post(form.$that.attr('action'), form.$that.serialize(), form.success).fail(form.fail);
     },
     success: function(data, textStatus, jqXHR) {
-	if (data.django_success) {
-	    form.$that.remove();
-	    slots.callback(data);
-	} else {
-	    form.$that.find('.errorlist').remove();
-	    var errors = data;
-	    for (var elist in errors) {
-		var $ul = $('<ul>', {'class':'errorlist'});
-		for (var e in errors[elist]) {
-		    $('<li>', {text:errors[elist][e]}).appendTo($ul);
-		}
-		switch (elist) {
-		case '__all__':
-		    $ul.prependTo(form.$that);
-		    break;
-		case 'start_time':
-		case 'end_time':
-		    $ul.appendTo('#times');
-		    break;
-		case 'mode':
-		    $ul.appendTo('#mode');
-		    break;
-		}
-	    }
-	}
+        if (data.django_success) {
+            form.$that.remove();
+            slots.callback(data);
+        } else {
+            form.$that.find('.errorlist').remove();
+            var errors = data;
+            for (var elist in errors) {
+                var $ul = $('<ul>', {'class':'errorlist'});
+                for (var e in errors[elist]) {
+                    $('<li>', {text:errors[elist][e]}).appendTo($ul);
+                }
+                switch (elist) {
+                case '__all__':
+                    $ul.prependTo(form.$that);
+                    break;
+                case 'start_time':
+                case 'end_time':
+                    $ul.appendTo('#times');
+                    break;
+                case 'mode':
+                    $ul.appendTo('#mode');
+                    break;
+                }
+            }
+        }
     },
     fail: function(jqXHR, textStatus, errorThrown) {
         alert('Erreur de la requête : ' + textStatus + ' ' + errorThrown);
@@ -207,50 +207,50 @@ var form = {
 };
 
 function drawCanvasStruct($can) {
-	for (var i=0; i<=96; i++) {
-		var xpos = X_ORI_SLOTS + (i * XSPACE);
-		var ystart = 22;
-		var color = '#CCCCCC';
-		if (i % 2 == 0) {
-			ystart = 20;
-			color = '#808080';
-		}
-		if (i % 4 == 0) {
-			ystart = 18;
-			color = 'black';
-		}
-		$can.drawLine({
-			strokeStyle: color,
-			x1: xpos, y1: ystart,
-			x2: xpos, y2: 230,
-			layer: true,
-		});
-	}
-	for (var i=0; i<=24; i++) {
-		var xpos = X_ORI_SLOTS + (i * XSPACE * 4);
-		$can.drawText({
-			fillStyle: 'black',
-			x: xpos, y:10,
-			fontSize: 12,
-			fontStyle: 'bold',
-			text: i + ':00',
-			layer: true,
-		});
-	}
-	for (var i=0; i<7; i++) {
-		var xpos = X_ORI_SLOTS - 5;
-		var ypos = Y_ORI_SLOTS + (SLOTS_HEIGHT / 2) + (i * YSPACE);
-		$can.drawText({
-			fillStyle: 'black',
-			x: xpos, y: ypos,
-			fontSize: 12,
-			fontStyle: 'bold',
-			align: 'right',
-			respectAlign: true,
-			text: DAYS_TEXT[i],
-			layer: true,
-		});
-	}
+        for (var i=0; i<=96; i++) {
+                var xpos = X_ORI_SLOTS + (i * XSPACE);
+                var ystart = 22;
+                var color = '#CCCCCC';
+                if (i % 2 == 0) {
+                        ystart = 20;
+                        color = '#808080';
+                }
+                if (i % 4 == 0) {
+                        ystart = 18;
+                        color = 'black';
+                }
+                $can.drawLine({
+                        strokeStyle: color,
+                        x1: xpos, y1: ystart,
+                        x2: xpos, y2: 230,
+                        layer: true,
+                });
+        }
+        for (var i=0; i<=24; i++) {
+                var xpos = X_ORI_SLOTS + (i * XSPACE * 4);
+                $can.drawText({
+                        fillStyle: 'black',
+                        x: xpos, y:10,
+                        fontSize: 12,
+                        fontStyle: 'bold',
+                        text: i + ':00',
+                        layer: true,
+                });
+        }
+        for (var i=0; i<7; i++) {
+                var xpos = X_ORI_SLOTS - 5;
+                var ypos = Y_ORI_SLOTS + (SLOTS_HEIGHT / 2) + (i * YSPACE);
+                $can.drawText({
+                        fillStyle: 'black',
+                        x: xpos, y: ypos,
+                        fontSize: 12,
+                        fontStyle: 'bold',
+                        align: 'right',
+                        respectAlign: true,
+                        text: DAYS_TEXT[i],
+                        layer: true,
+                });
+        }
 }
 
 
@@ -261,9 +261,9 @@ $.ajaxSetup({timeout:5000});
     $('.hide-if-js').addClass('hidden');
     $('.show-if-js').removeClass('hidden');
     $('#zone-tabs').tabs();
-	$('.zone-canvas').each(function() {
-		drawCanvasStruct($(this));
-	});
+        $('.zone-canvas').each(function() {
+                drawCanvasStruct($(this));
+        });
     $('.zone-slots').each(function() {
         slots.init(this);
     });
