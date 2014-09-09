@@ -1,0 +1,28 @@
+from .development import *
+
+ADMINS = (
+    ('John', 'john@example.com'),
+)
+
+EMAIL_HOST = ''
+EMAIL_PORT = 25
+EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = ''
+EMAIL_USE_TLS = True
+
+SECRET_KEY = ''
+
+ALLOWED_HOSTS = []
+
+DEBUG = TEMPLATE_DEBUG = False
+
+DATABASES = {
+    'default': {
+    }
+}
+
+INSTALLED_APPS += (
+    'gunicorn',
+)
+
+STATIC_ROOT = ''
