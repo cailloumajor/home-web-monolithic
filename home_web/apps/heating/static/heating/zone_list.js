@@ -256,14 +256,31 @@ function drawCanvasStruct($can) {
 
 
 $(function() {
-$.ajaxSetup({timeout:5000});
-
+    $.ajaxSetup({timeout:5000});
     $('.hide-if-js').addClass('hidden');
     $('.show-if-js').removeClass('hidden');
     $('#zone-tabs').tabs();
-        $('.zone-canvas').each(function() {
-                drawCanvasStruct($(this));
-        });
+    $('.zone-canvas').each(function() {
+        drawCanvasStruct($(this));
+        var $legend = $('<div>', {'class': 'legend'});
+        for (var key in SLOTS_REPR) {
+            var $cont = $('<span>');
+            $('<span>', {
+                'class': 'legend-rect',
+                css: {
+                    'background-color': 'rgba(' + SLOTS_REPR[key][0] + ',0.3)',
+                    'height': SLOTS_HEIGHT,
+                    'width': XSPACE * 4,
+                }
+            }).appendTo($cont);
+            $('<span>', {
+                'class': 'legend-text',
+                text: SLOTS_REPR[key][1],
+            }).appendTo($cont);
+            $cont.appendTo($legend);
+        }
+        $(this).after($legend);
+    });
     $('.zone-slots').each(function() {
         slots.init(this);
     });

@@ -94,3 +94,22 @@ main h2 a {
 #del-ind p span:last-child {
     float: right;
 }
+
+.legend {
+    margin: 0 auto;
+    padding-top: 2px;
+}
+
+.legend > span {
+    padding: 0 20px;
+}
+
+.legend-rect {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.legend-text {
+    text-transform: uppercase;
+    vertical-align: top;
+}
