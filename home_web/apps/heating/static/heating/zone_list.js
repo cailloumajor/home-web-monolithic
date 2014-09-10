@@ -4,6 +4,12 @@ const XSPACE = 10;
 const YSPACE = 30;
 const SLOTS_HEIGHT = 15;
 const DAYS_TEXT = ['LUN.', 'MAR.', 'MER.', 'JEU.', 'VEN.', 'SAM.', 'DIM.'];
+const SLOTS_REPR = {
+    'add': ['255,255,0', 'Confort'],
+    'E': ['0,255,0', 'Eco.'],
+    'H': ['0,0,255', 'Hors-gel'],
+    'A': ['255,0,0', 'Arrêt'],
+}
 
 function timeToScale(strTime) {
     var timeArray = strTime.split(':');
@@ -30,12 +36,6 @@ var slots = {
         return ($delInd.length > 0) && !$delInd.hasClass('hidden');
     },
     days: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
-    colors: {
-    'add': '255,255,0',
-    'E': '0,255,0',
-    'H': '0,0,255',
-    'A': '255,0,0',
-    },
     init: function(zoneSlots) {
         slots.$can = $(zoneSlots.id.replace('zone-slots', '#can'));
         var data = {
@@ -61,9 +61,9 @@ var slots = {
         for (var i=0; i<slots.days.length; i++) {
             if (! slotData[slots.days[i]]) continue;
             slots.$can.drawRect({
-                strokeStyle: 'rgb(' + slots.colors[slotData.mode] + ')',
+                strokeStyle: 'rgb(' + SLOTS_REPR[slotData.mode][0] + ')',
                 strokeWidth: 0,
-                fillStyle: 'rgba(' + slots.colors[slotData.mode] + ',0.3)',
+                fillStyle: 'rgba(' + SLOTS_REPR[slotData.mode][0] + ',0.3)',
                 x: xstart, y: Y_ORI_SLOTS + YSPACE * i,
                 width: slotWidth, height: SLOTS_HEIGHT,
                 fromCenter: false,
