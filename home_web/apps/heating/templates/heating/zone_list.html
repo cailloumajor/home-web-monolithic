@@ -10,12 +10,14 @@
       </h2>
       <table class="slot-table">
         {% if z.slot_set.count %}
+        <thead>
         <tr>
           <th>Début</th><th>Fin</th><th>Lun</th><th>Mar</th><th>Mer</th>
           <th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
           <th>Mode<p class="expl">(Eco/Hors-gel/Arrêt)</p></th>
         </tr>
-        {% endif %}
+        </thead>
+        <tbody>
         {% for d in z.slot_set.all %}
         <tr class="slot-desc" id='pk-{{ d.pk }}'>
           <td class="start_time">{{ d.start_time|time:'H:i' }}</td>
@@ -34,6 +36,8 @@
           </td>
         </tr>
         {% endfor %}
+        </tbody>
+        {% endif %}
       </table>
     </div>
     {% endfor %}
