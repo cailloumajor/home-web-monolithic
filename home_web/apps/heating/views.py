@@ -4,7 +4,7 @@ import json
 import datetime
 
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse
@@ -71,3 +71,61 @@ class SlotUpdate(AjaxResponseMixin, UpdateView):
 class SlotDelete(AjaxResponseMixin, DeleteView):
     model = Slot
     success_url = reverse_lazy('zone_list')
+
+class ModeAPI(View):
+    http_method_names = ['get']
+
+    def get(self, request, *args, **kwargs):
+        def validate_request(url_params):
+            param_cond = {
+                'd': (1, 7),
+                'h': (0, 23),
+                'm': (0, 59)
+            }
+            err = []
+            if not all(key in url_params for key in param_cond):
+                err.append({
+                    'text': ("One or more parameters missing in the URL. "
+                             "Required: d, h & m"),
+                    })
+                return err
+            for key in param_cond:
+                mini = param_cond[key][0]
+                maxi = param_cond[key][1]
+                try:
+                    int_val = int(url_params[key])
+                except ValueError:
+                    err.append({
+                        'text': ("Conversion of '%s' parameter "
+                                 "to integer failed") % key
+                    })
+                    continue
+                if not (mini <= int_val <= maxi):
+                    err.append({
+                        'text': ("'%s' URL parameter "
+                                 "out of range (%s-%s)") % (key, mini, maxi)
+                    })
+            return err
+        errors = validate_request(request.GET)
+        data = {}
+        if errors:
+            data['errors'] = errors
+            return HttpResponse(json.dumps(data),
+                                content_type='application/json',
+                                status=400)
+        modes = {}
+        days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        day = days[int(request.GET['d']) - 1]
+        time = datetime.time(
+            hour=int(request.GET['h']),
+            minute=int(request.GET['m'])
+        )
+        for zone in Zone.objects.all():
+            try:
+                modes[zone.num] = zone.slot_set.filter(**{day: True}).get(
+                    start_time__lte = time, end_time__gte = time
+                ).mode
+            except:
+                modes[zone.num] = 'C'
+        data['modes'] = modes
+        return HttpResponse(json.dumps(data), content_type='application/json')
