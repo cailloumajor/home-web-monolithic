@@ -5,8 +5,10 @@
 {% block title %}Gestion du chauffage{% endblock %}
 
 {% block assets %}
+  <link charset="utf-8" rel="stylesheet" href='{% static 'css/jquery-ui.min.css' %}' type="text/css">
+  <link charset="utf-8" rel="stylesheet" href='{% static 'css/jquery-ui-timepicker.css' %}' type="text/css">
   <link rel="stylesheet" href='{% static 'css/heating/zone_list.css' %}' type="text/css" charset="utf-8">
   <link rel="stylesheet" href='{% static 'css/heating/heating_forms.css' %}' type="text/css" charset="utf-8">
-  <script defer="true" src='{% static 'js/heating/zone_list.js' %}' type="text/javascript"></script>
+  <script data-main='{% static 'js/heating/zone_list.js' %}' src='{% static 'js/lib/require.js' %}'></script>
 {% endblock %}
 
