@@ -89,10 +89,10 @@ define(['jquery', 'app/consts', 'app/form', 'jcanvas'],
             sl.groupName = layer.groups[0];
             if (!sl.delMode()) {
                 callback = (sl.groupName == 'add') ? sl.draw : sl.update;
-                form.load(layer.data.addUpdURL, callback);
+                form.load(layer.data.addUpdURL, callback, sl);
             } else if (sl.groupName != 'add') {
                 callback = sl.del;
-                form.load(layer.data.delURL, callback);
+                form.load(layer.data.delURL, callback, sl);
             }
         },
         update: function(slotData) {

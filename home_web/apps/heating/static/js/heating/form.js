@@ -3,9 +3,11 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
     return {
         $that: null,
         callback: null,
-        load: function(url, callback) {
+        callerObj: null,
+        load: function(url, callback, caller) {
             var self = this;
             this.callback = callback;
+            this.callerObj = caller;
             $('#form-container').load(url, function(response, status, jqxhr) {
                 if (status != 'success') {
                     alert('Erreur de chargement du formulaire : ' + jqxhr.status + ' ' + jqxhr.statusText);
@@ -61,16 +63,23 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                 width: dialogWidth,
             });
             $('.form-btn').button();
-            this.$that.submit(this.submit);
+            this.$that.submit(this, function(event) {
+                var self = event.data;
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: self.$that.attr('action'),
+                    data: self.$that.serialize(),
+                    success: self.success,
+                    error: self.fail,
+                    context: self,
+                });
+            });
         },   
-        submit: function(event) {
-            event.preventDefault();
-            $.post(this.$that.attr('action'), this.$that.serialize(), this.success).fail(this.fail);
-        },
         success: function(data, textStatus, jqXHR) {
             if (data.django_success) {
                 this.$that.remove();
-                this.callback(data);
+                this.callback.call(this.callerObj, data);
             } else {
                 this.$that.find('.errorlist').remove();
                 var errors = data;
@@ -81,7 +90,7 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                     }
                     switch (elist) {
                     case '__all__':
-                        $ul.prependTo(form.$that);
+                        $ul.prependTo(this.$that);
                         break;
                     case 'start_time':
                     case 'end_time':

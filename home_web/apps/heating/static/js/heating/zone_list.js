@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: 'static/js/lib',
+    baseUrl: '/static/js/lib',
     paths: {
         'app': '../heating',
     },
@@ -9,14 +9,14 @@ require.config({
     },
 });
 
-require(['jquery', 'app/slots', 'jquery-ui/tabs', 'jquery-ui/button', 'domReady!'],
-        function($, slots) {
+require(['jquery', 'app/init_canvas', 'app/slots', 'jquery-ui/tabs', 'jquery-ui/button', 'domReady!'],
+        function($, initCanvas, slots) {
     $.ajaxSetup({timeout:5000});
     $('.hide-if-js').addClass('hidden');
     $('.show-if-js').removeClass('hidden');
     $('#zone-tabs').tabs();
     $('.zone-canvas').each(function() {
-        drawCanvasStruct($(this));
+        initCanvas($(this));
     });
     $('.zone-slots').each(function() {
         slots.init(this);
