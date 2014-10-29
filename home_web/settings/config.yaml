@@ -1,0 +1,41 @@
+home_web:
+  # SECRET_KEY - scalar
+  secret_key: secret
+
+  # STATIC_ROOT - scalar
+  static_root: /var/www/static
+
+  # ADMINS - sequence of sequences of scalars
+  admins:
+    - [John, john@example.com]
+    - [Jack, jack@example.com]
+
+  # ALLOWED_HOSTS - sequence of scalars
+  allowed_hosts:
+    - .example.com
+    - .example.org
+
+  email:
+    # EMAIL_HOST - scalar
+    host: localhost
+    # EMAIL_PORT - integer
+    port: 25
+    # EMAIL_HOST_PASSWORD - scalar
+    pass: password
+    # EMAIL_HOST_USER - scalar
+    user: user@example.com
+    # EMAIL_USE_TLS - boolean
+    tls: false
+
+  # DATABASES['default']
+  db:
+    # ['NAME'] - scalar
+    name: dbname
+    # ['USER'] - scalar
+    user: dbuser
+    # ['PASSWORD'] - scalar
+    pass: password
+    # ['HOST'] - scalar
+    host: ''
+    # ['PORT'] - scalar
+    port: ''
