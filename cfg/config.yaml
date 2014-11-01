@@ -1,3 +1,6 @@
+# YamJam configuration file
+# Goes in : ~/.yamjam/ (home of user running wsgi)
+
 home_web:
   # SECRET_KEY - scalar
   secret_key: secret
