@@ -1,0 +1,28 @@
+# Nginx configuration file
+# Goes in : /etc/nginx/sites-available
+
+upstream home_web_appserver {
+  server unix:/tmp/home_web_gunicorn.sock fail_timeout=0;
+}
+
+server {
+  listen 80;
+  server_name example.com;
+  access_log /var/log/nginx/home_web_access.log;
+  error_log /var/log/nginx/home_web_error.log;
+
+  location /static/ {
+    alias /srv/static-www/home_web/;
+  }
+
+  location / {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    if (!-f $request_filename) {
+      proxy_pass http://home_web_appserver;
+      break;
+    }
+  }
+}
