@@ -26,3 +26,7 @@ DATABASES = {
 }
 
 STATIC_ROOT = yjval('static_root')
+
+STATICFILES_STORAGE = 'require.storage.OptimizedStaticFilesStorage'
+
+REQUIRE_BASE_URL = 'js/lib'
