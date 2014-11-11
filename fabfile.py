@@ -9,11 +9,11 @@ def push():
     local("git push")
 
 def remote_deploy():
-    pyvenv = '~/.virtualenvs/home_web/bin/python'
     with cd(env.remote_root):
         with settings(sudo_user='home_web'):
             sudo("git pull")
-            sudo(pyvenv + " manage.py collectstatic --noinput --clear")
+            with prefix("source ~/.virtualenvs/home_web/bin/activate"):
+                sudo("python manage.py collectstatic --noinput --clear")
 
 def deploy():
     push()
