@@ -1,7 +1,5 @@
-# Nginx configuration file
-# Goes in : /etc/nginx/sites-available
-
 upstream home_web_appserver {
+
   server unix:/tmp/home_web_gunicorn.sock fail_timeout=0;
 }
 

@@ -1,0 +1,3 @@
+Files under this directory are configuration files going outside of the project.
+The path relative to this directory corresponds to the destination path,
+relative to the root of the server (Debian paths).
