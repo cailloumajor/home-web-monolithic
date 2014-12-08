@@ -1,6 +1,3 @@
-# Gunicorn configuration file
-# Goes in : stays here !
-
 import multiprocessing
 
 proc_name = 'home_web'
