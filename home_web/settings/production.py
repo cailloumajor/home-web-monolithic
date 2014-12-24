@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 from .external_config import yjval
 
 SECRET_KEY = yjval('secret_key')
