@@ -14,10 +14,10 @@ env.www_rsync_module = 'home_web-www'
 env.www_exclude = [
     '.git/',
     '.gitignore',
-    '/home_web/extcfg/',
-    '/home_web/fabfile.py',
-    '/home_web/requirements*.txt',
-    '/home_web/tmp/',
+    '/extcfg/',
+    '/fabfile.py',
+    '/requirements_dev.txt',
+    '/tmp/',
     'static/',
 ]
 env.build_dir = None
@@ -55,16 +55,21 @@ def _build_static():
 
 def _deploy_static():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
-    result = _rsync_project(remote_dir=':{}/'.format(env.static_rsync_module),
-                            local_dir=os.path.join(env.build_dir, ''),
-                            delete=True, capture=True)
+    result = _rsync_project(
+        remote_dir=':{}/'.format(env.static_rsync_module),
+        local_dir=os.path.join(env.build_dir, ''),
+        delete=True, capture=True
+    )
     _filter_output(result, 2)
 
 def _deploy_www():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
-    result = _rsync_project(remote_dir=':{}/'.format(env.www_rsync_module),
-                            delete=True, exclude=env.www_exclude, capture=True,
-                            extra_opts="--delete-excluded --filter=':- .gitignore'")
+    result = _rsync_project(
+        remote_dir=':{}/'.format(env.www_rsync_module),
+        local_dir='./',
+        delete=True, exclude=env.www_exclude, capture=True,
+        extra_opts="--delete-excluded --filter=':- .gitignore'",
+    )
     _filter_output(result, 2)
 
 def deploy():
