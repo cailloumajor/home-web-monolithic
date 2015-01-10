@@ -5,7 +5,7 @@ from django.conf.urls import patterns, url, include
 from . import views
 
 api_patterns = patterns('',
-    url(r'^mode/$', views.ModeAPI.as_view(), name='api-mode'),
+    url(r'^modes/$', views.ModeAPI.as_view(), name='api_mode'),
 )
 
 urlpatterns = patterns('',
