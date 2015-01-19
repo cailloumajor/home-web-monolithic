@@ -51,7 +51,7 @@ define(['jquery', 'app/consts', 'jcanvas'],
             $('<span>', {
                 'class': 'legend-rect',
                 css: {
-                    'background-color': 'rgba(' + CST.SLOTS_REPR[key][0] + ',0.3)',
+                    'background-color': CST.SLOTS_REPR[key][2],
                     'height': CST.SLOTS_HEIGHT,
                     'width': CST.XSPACE * 4,
                 }
