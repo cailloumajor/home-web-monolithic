@@ -10,7 +10,8 @@ require.config({
 });
 
 require(['jquery', 'app/init_canvas', 'app/slots', 'jquery-ui/tabs', 'jquery-ui/button', 'domReady!'],
-        function($, initCanvas, slots) {
+        function($, initCanvas, slots)
+{
     $.ajaxSetup({timeout:5000});
     $('.hide-if-js').addClass('hidden');
     $('.show-if-js').removeClass('hidden');
@@ -23,4 +24,9 @@ require(['jquery', 'app/init_canvas', 'app/slots', 'jquery-ui/tabs', 'jquery-ui/
     });
     $('#del-btn').button().click(function() {slots.delMode(true);});
     $('#nodel-btn').button().click(function() {slots.delMode(false);});
+    $body = $('body');
+    $(document).on({
+        ajaxStart: function() {$body.addClass('loading');},
+        ajaxStop: function() {$body.removeClass('loading');},
+    });
 });
