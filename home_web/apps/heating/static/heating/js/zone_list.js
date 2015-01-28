@@ -1,7 +1,7 @@
 require.config({
-    baseUrl: '/static/js/lib',
+    baseUrl: '/static/home_web/js/lib',
     paths: {
-        'app': '../heating',
+        'app': '../../../heating/js',
     },
     shim: {
         'jcanvas': ['jquery'],
