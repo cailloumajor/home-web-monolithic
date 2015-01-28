@@ -21,7 +21,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'require',
     'home_web.apps.heating',
 )
 
@@ -87,4 +86,3 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
-REQUIRE_BASE_URL = 'js/lib'
