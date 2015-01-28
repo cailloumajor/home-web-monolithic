@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% load staticfiles %}
-{% load require %}
 
 {% block title %}Gestion du chauffage{% endblock %}
 
@@ -10,7 +9,6 @@
   <link charset="utf-8" rel="stylesheet" href='{% static 'css/jquery-ui-timepicker.css' %}' type="text/css">
   <link rel="stylesheet" href='{% static 'css/heating/zone_list.css' %}' type="text/css" charset="utf-8">
   <link rel="stylesheet" href='{% static 'css/heating/heating_forms.css' %}' type="text/css" charset="utf-8">
-{#  <script data-main='{% static 'js/heating/zone_list.js' %}' src='{% static 'js/lib/require.js' %}'></script>#}
-  {% require_module '../heating/zone_list' %}
+  <script data-main='{% static 'js/heating/zone_list.js' %}' src='{% static 'js/lib/require.js' %}'></script>
 {% endblock %}
 
