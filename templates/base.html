@@ -8,9 +8,9 @@
 
     <meta charset="utf-8">
     <title>{% block title %}Le site de la maison{% endblock %}</title>
-    <link rel="icon" type="image/png" href='{% static 'css/images/favicon.png' %}'>
-    <!--[if IE]><link rel="shortcut icon" type="image/x-icon" href='{% static 'css/images/favicon.ico' %}'><![endif]-->
-    <link charset="utf-8" rel="stylesheet" href='{% static 'css/home_page.css' %}' type="text/css">
+    <link rel="icon" type="image/png" href='{% static 'home_web/img/favicon.png' %}'>
+    <!--[if IE]><link rel="shortcut icon" type="image/x-icon" href='{% static 'home_web/img/favicon.ico' %}'><![endif]-->
+    <link charset="utf-8" rel="stylesheet" href='{% static 'home_web/css/home_page.css' %}' type="text/css">
     {% block assets %}{% endblock %}
 
   </head>
@@ -19,7 +19,7 @@
 
     <header>
       <div id="main_title">
-        <a href='{% url 'home' %}' title="Accueil"><img alt="logo" src='{% static 'css/images/home_logo.png' %}'></a>
+        <a href='{% url 'home' %}' title="Accueil"><img alt="logo" src='{% static 'home_web/img/home_logo.png' %}'></a>
         <h1>HomeWeb</h1>
       </div>
       <nav>
