@@ -1,6 +1,6 @@
 upstream home_web_appserver {
 
-  server unix:/tmp/home_web_gunicorn.sock fail_timeout=0;
+  server unix:/tmp/home_web/gunicorn.sock fail_timeout=0;
 }
 
 server {
