@@ -23,6 +23,6 @@ exec $GUNICORN \
      --name $NAME \
      --workers $WORKERS \
      --bind "unix:${SOCK_PID_DIR}/${SOCKFILE}" \
-     --pid "${SOCK_PID_DIR}/${SOCKFILE}" \
+     --pid "${SOCK_PID_DIR}/${PIDFILE}" \
      --log-file - \
      home_web.wsgi
