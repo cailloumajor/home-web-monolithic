@@ -65,12 +65,14 @@ def _test_repo():
             yellow("Continue anyway ?"))):
         abort("Abort at user request")
 
+@task
 def collect_static():
     env.static = TemporaryStaticDir()
     with shell_env(DJANGO_CONFIG_PARAM='static_build',
                    DJANGO_STATIC_BUILDDIR=env.static.src_dir):
         local("python manage.py collectstatic --noinput")
 
+@task
 def build_static():
     collect_static()
     with lcd(env.static.tools_dir):
@@ -79,6 +81,7 @@ def build_static():
             os.path.relpath(env.static.build_dir, env.static.tools_dir)
         ))
 
+@task
 def deploy_static():
     build_static()
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
@@ -89,6 +92,7 @@ def deploy_static():
     )
     env.static.delete()
 
+@task
 def deploy_www():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
     _rsync_project(
@@ -98,6 +102,7 @@ def deploy_www():
         extra_opts="--delete-excluded --filter=':- .gitignore'",
     )
 
+@task(default=True)
 def deploy():
     _test_repo()
     deploy_static()
