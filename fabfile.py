@@ -20,7 +20,32 @@ env.www_exclude = [
     '/tmp/',
     'static/',
 ]
-env.build_dir = None
+
+class TemporaryStaticDir(object):
+
+    SUBDIRS = (
+        'src',
+        'build',
+    )
+    TOOLS_DIR = './tools'
+
+    def __init__(self):
+        self.root_dir = tempfile.mkdtemp()
+        os.chmod(self.root_dir, 0755)
+        shutil.copytree(self.TOOLS_DIR, self.tools_dir)
+        for sd in self.SUBDIRS:
+            os.mkdir(os.path.join(self.root_dir, sd))
+
+    def __getattr__(self, name):
+        if not (self.root_dir and name.endswith('_dir')):
+            raise AttributeError("'{}' object has no attribute '{}'".format(
+                self.__class__.__name__, name
+            ))
+        return os.path.join(self.root_dir, name[:-4])
+
+    def delete(self):
+        shutil.rmtree(self.root_dir)
+        self.root_dir = None
 
 def _rsync_project(*args, **kwargs):
     """"
@@ -32,12 +57,6 @@ def _rsync_project(*args, **kwargs):
     __builtins__['any'] = bak_any
     return out
 
-def _filter_output(res, nlines):
-    if res.succeeded:
-        puts(green('\n'.join(res.split('\n')[-nlines:])))
-    else:
-        abort(res.stderr)
-
 def _test_repo():
     result = local("git status --porcelain", capture=True)
     if result and not console.confirm("{0} {1}\n{2}".format(
@@ -46,40 +65,40 @@ def _test_repo():
             yellow("Continue anyway ?"))):
         abort("Abort at user request")
 
-def _build_static():
+def collect_static():
+    env.static = TemporaryStaticDir()
     with shell_env(DJANGO_CONFIG_PARAM='static_build',
-                   DJANGO_STATIC_BUILDDIR=env.build_dir):
-        result = local("python manage.py collectstatic --noinput",
-                       capture=True)
-    _filter_output(result, 1)
+                   DJANGO_STATIC_BUILDDIR=env.static.src_dir):
+        local("python manage.py collectstatic --noinput")
 
-def _deploy_static():
+def build_static():
+    collect_static()
+    with lcd(env.static.tools_dir):
+        local("node r.js -o app.build.js appDir={0} dir={1}".format(
+            os.path.relpath(env.static.src_dir, env.static.tools_dir),
+            os.path.relpath(env.static.build_dir, env.static.tools_dir)
+        ))
+
+def deploy_static():
+    build_static()
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
-    result = _rsync_project(
+    _rsync_project(
         remote_dir=':{}/'.format(env.static_rsync_module),
-        local_dir=os.path.join(env.build_dir, ''),
-        delete=True, capture=True
+        local_dir=os.path.join(env.static.build_dir, ''),
+        delete=True
     )
-    _filter_output(result, 2)
+    env.static.delete()
 
-def _deploy_www():
+def deploy_www():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
-    result = _rsync_project(
+    _rsync_project(
         remote_dir=':{}/'.format(env.www_rsync_module),
         local_dir='./',
-        delete=True, exclude=env.www_exclude, capture=True,
+        delete=True, exclude=env.www_exclude,
         extra_opts="--delete-excluded --filter=':- .gitignore'",
     )
-    _filter_output(result, 2)
 
 def deploy():
     _test_repo()
-    env.build_dir = tempfile.mkdtemp()
-    os.chmod(env.build_dir, 0755)
-    try:
-        with settings(warn_only=True):
-            _build_static()
-            _deploy_static()
-    finally:
-        shutil.rmtree(env.build_dir)
-    _deploy_www()
+    deploy_static()
+    deploy_www()
