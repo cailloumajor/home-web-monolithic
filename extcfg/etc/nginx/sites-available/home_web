@@ -1,5 +1,4 @@
 upstream home_web_appserver {
-
   server unix:/tmp/home_web/gunicorn.sock fail_timeout=0;
 }
 
@@ -10,7 +9,7 @@ server {
   error_log /var/log/nginx/home_web_error.log;
 
   location /static/ {
-    alias /srv/static-www/home_web/;
+    alias /srv/static/home_web/;
   }
 
   location / {
