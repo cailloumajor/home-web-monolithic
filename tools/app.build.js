@@ -1,7 +1,7 @@
 ({
-    appDir: '../src/',
+//    appDir: '../src/',
     baseUrl: './',
-    dir: '../build',
+//    dir: '../build',
     optimize: 'uglify2',
     optimizeCss: 'standard',
 })
