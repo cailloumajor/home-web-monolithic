@@ -47,16 +47,6 @@ class TemporaryStaticDir(object):
         shutil.rmtree(self.root_dir)
         self.root_dir = None
 
-def _rsync_project(*args, **kwargs):
-    """"
-    Horrible hack to prevent rsync-project from passing --rsh option to rsync
-    """
-    bak_any = __builtins__['any']
-    __builtins__['any'] = lambda x: False
-    out = project.rsync_project(*args, **kwargs)
-    __builtins__['any'] = bak_any
-    return out
-
 def _test_repo():
     result = local("git status --porcelain", capture=True)
     if result and not console.confirm("{0} {1}\n{2}".format(
@@ -85,7 +75,7 @@ def build_static():
 def deploy_static():
     build_static()
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
-    _rsync_project(
+    project.rsync_project(
         remote_dir=':{}/'.format(env.static_rsync_module),
         local_dir=os.path.join(env.static.build_dir, ''),
         delete=True
@@ -95,7 +85,7 @@ def deploy_static():
 @task
 def deploy_www():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
-    _rsync_project(
+    project.rsync_project(
         remote_dir=':{}/'.format(env.www_rsync_module),
         local_dir='./',
         delete=True, exclude=env.www_exclude,
