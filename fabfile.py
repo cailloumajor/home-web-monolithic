@@ -8,10 +8,9 @@ from fabric.api import *
 from fabric.colors import green, yellow
 from fabric.contrib import console, project
 
-env.colorize_errors = True
-env.static_rsync_module = 'home_web-static'
-env.www_rsync_module = 'home_web-www'
-env.www_exclude = [
+STATIC_RSYNC_MODULE = 'home_web-static'
+WWW_RSYNC_MODULE = 'home_web-www'
+WWW_EXCLUDE = [
     '.git/',
     '.gitignore',
     '/extcfg/',
@@ -20,6 +19,13 @@ env.www_exclude = [
     '/tmp/',
     'static/',
 ]
+
+env.colorize_errors = True
+try:
+    with open('fab_hosts', 'r') as f:
+        env.hosts = f.read().splitlines()
+except IOError:
+    pass
 
 class TemporaryStaticDir(object):
 
@@ -86,7 +92,7 @@ def deploy_static():
     build_static()
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
     _rsync_project(
-        remote_dir=':{}/'.format(env.static_rsync_module),
+        remote_dir=':{}/'.format(STATIC_RSYNC_MODULE),
         local_dir=os.path.join(env.static.build_dir, ''),
         delete=True
     )
@@ -96,9 +102,9 @@ def deploy_static():
 def deploy_www():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
     _rsync_project(
-        remote_dir=':{}/'.format(env.www_rsync_module),
+        remote_dir=':{}/'.format(WWW_RSYNC_MODULE),
         local_dir='./',
-        delete=True, exclude=env.www_exclude,
+        delete=True, exclude=WWW_EXCLUDE,
         extra_opts="--delete-excluded --filter=':- .gitignore'",
     )
 
