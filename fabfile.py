@@ -10,7 +10,7 @@ from fabric.contrib import console, project
 
 STATIC_RSYNC_MODULE = 'home_web-static'
 WWW_RSYNC_MODULE = 'home_web-www'
-WWW_EXCLUDE = [
+WWW_EXCLUDE = (
     '.git/',
     '.gitignore',
     '/extcfg/',
@@ -18,7 +18,7 @@ WWW_EXCLUDE = [
     '/requirements_dev.txt',
     '/tmp/',
     'static/',
-]
+)
 
 env.colorize_errors = True
 try:
