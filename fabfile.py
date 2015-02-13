@@ -19,6 +19,11 @@ WWW_EXCLUDE = (
     '/tmp/',
     'static/',
 )
+EXTCFG_DIR = 'extcfg'
+EXTCFG_EXCLUDE = (
+    'README',
+    'config.yaml',
+)
 
 env.colorize_errors = True
 try:
@@ -113,3 +118,20 @@ def deploy():
     _test_repo()
     deploy_static()
     deploy_www()
+
+@task
+def deploy_extcfg():
+    _test_repo()
+    paths = [
+        os.path.join(os.path.relpath(dp, EXTCFG_DIR), f)
+        for dp, dn, fn in os.walk(EXTCFG_DIR)
+        for f in fn if f not in EXTCFG_EXCLUDE
+    ]
+    project.rsync_project(remote_dir='', local_dir=EXTCFG_DIR, delete=True)
+    with cd(EXTCFG_DIR):
+        for path in paths:
+            sudo("cp {src} {dst}".format(
+                src=path, dst=os.path.join(os.sep, path)
+            ))
+    sudo("kill -HUP $(cat /run/nginx.pid)")
+    sudo("kill -HUP $(cat /run/supervisord.pid)")
