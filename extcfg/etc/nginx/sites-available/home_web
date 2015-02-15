@@ -4,22 +4,37 @@ upstream home_web_appserver {
 
 server {
   listen 80;
+  listen 443 ssl;
   server_name example.com;
+  ssl_certificate /etc/nginx/ssl/home_web.crt;
+  ssl_certificate_key /etc/nginx/ssl/home_web.key;
   access_log /var/log/nginx/home_web_access.log;
   error_log /var/log/nginx/home_web_error.log;
+
+  # Set root to static files directory
+  root /srv/static/home_web;
 
   location /static/ {
     alias /srv/static/home_web/;
   }
 
+  location /admin/ {
+    if ($scheme = 'http') {
+      return 301 https://$host$request_uri;
+    }
+    try_files $uri @proxy_to_app;
+  }
+
   location / {
+    try_files $uri @proxy_to_app;
+  }
+
+  location @proxy_to_app {
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Host $http_host;
     proxy_redirect off;
-    if (!-f $request_filename) {
-      proxy_pass http://home_web_appserver;
-      break;
-    }
+    proxy_pass http://home_web_appserver;
   }
 }
