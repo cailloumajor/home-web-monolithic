@@ -3,3 +3,4 @@
 ipython
 fabric
 nodeenv
+pyinotify

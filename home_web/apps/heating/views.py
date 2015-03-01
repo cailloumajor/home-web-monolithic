@@ -1,28 +1,16 @@
 #-*- coding: utf-8 -*-
 
-import json
 import datetime
 
-from django.shortcuts import render
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponse
+from django.http import JsonResponse
 
 from .models import Slot, Zone
 from .forms import SlotForm
 
-class ExtendedEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime.time):
-            return obj.strftime('%H:%M')
-        return json.JSONEncoder.default(self, obj)
-
 class AjaxResponseMixin(object):
-    def render_to_json_response(self, context):
-        data = json.dumps(context, cls=ExtendedEncoder)
-        return HttpResponse(data, content_type='application/json')
-
     def form_valid(self, form):
         response = super(AjaxResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
@@ -31,21 +19,21 @@ class AjaxResponseMixin(object):
             data['pk'] = 'pk-%s' % self.object.pk
             data['addUpdURL'] = reverse('update_slot', kwargs={'pk':self.object.pk})
             data['delURL'] = reverse('del_slot', kwargs={'pk':self.object.pk})
-            return self.render_to_json_response(data)
+            return JsonResponse(data)
         else:
             return response
 
     def form_invalid(self, form):
         response = super(AjaxResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
-            return self.render_to_json_response(form.errors)
+            return JsonResponse(form.errors)
         else:
             return response
 
     def delete(self, request, *args, **kwargs):
         response = super(AjaxResponseMixin, self).delete(request, *args, **kwargs)
         if request.is_ajax():
-            return self.render_to_json_response({'django_success':True})
+            return JsonResponse({'django_success':True})
         else:
             return response
 
@@ -80,9 +68,7 @@ class ModeAPI(View):
         data = {}
         if errors:
             data['errors'] = errors
-            return HttpResponse(json.dumps(data),
-                                content_type='application/json',
-                                status=400)
+            return JsonResponse(data, status=400)
         modes = {}
         now = datetime.datetime.now()
         day = [
@@ -97,4 +83,4 @@ class ModeAPI(View):
             except:
                 modes[zone.num] = 'C'
         data['modes'] = modes
-        return HttpResponse(json.dumps(data), content_type='application/json')
+        return JsonResponse(data)
