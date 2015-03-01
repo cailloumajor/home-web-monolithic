@@ -7,7 +7,7 @@ from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import JsonResponse
 
-from .models import Slot, Zone
+from .models import Slot, Zone, Derogation
 from .forms import SlotForm
 
 class AjaxResponseMixin(object):
@@ -39,6 +39,11 @@ class AjaxResponseMixin(object):
 
 class ZoneList(ListView):
     model = Zone
+
+    def get_context_data(self, **kwargs):
+        context = super(ZoneList, self).get_context_data(**kwargs)
+        context['derogation_list'] = Derogation.objects.all()
+        return context
 
 class SlotCreate(AjaxResponseMixin, CreateView):
     model = Slot
