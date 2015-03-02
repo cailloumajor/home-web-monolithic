@@ -25,8 +25,11 @@ require(
     $('.zone-slots').each(function() {
         slots.init(this);
     });
-    $('#del-btn').button().click(function() {slots.delMode(true);});
-    $('#nodel-btn').button().click(function() {slots.delMode(false);});
+    $('#del-btn').button().click(function() {
+        icon = this.checked ? 'ui-icon-alert' : null;
+        $(this).button('option', 'icons', {primary: icon, secondary: icon});
+    });
+    $('#del-zone').detach().appendTo('#zone-tabs .ui-tabs-nav')
     $body = $('body');
     $(document).on({
         ajaxStart: function() {$body.addClass('loading');},

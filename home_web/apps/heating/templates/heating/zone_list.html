@@ -62,17 +62,9 @@
     </div>
     {% endfor %}
   </div>
-  <div class="show-if-js hidden" id="del-zone">
-    <button id="del-btn">Suppression</button>
-    <div class="ui-widget ui-state-error ui-corner-all hidden" id="del-ind">
-      <p>
-        <span class="ui-icon ui-icon-alert"></span>
-        Mode suppression
-        <span class="ui-icon ui-icon-alert"></span>
-      </p>
-      <button id="nodel-btn">Annuler</button>
-    </div>
-  <div id="form-container">
-  </div>
+  <span class="show-if-js hidden" id="del-zone">
+    <input id="del-btn" type="checkbox"></input><label for="del-btn">Suppression</label>
+  </span>
+  <div id="form-container"></div>
 {% endblock %}
     
