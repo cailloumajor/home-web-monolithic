@@ -1,6 +1,7 @@
 {% extends "heating/heating_base.html" %}
 
 {% block content %}
+
   <div id="zone-slots-nojs">
   {% for z in zone_list %}
     <div class="zone-slots" id='zone-slots-z{{ z.num }}'>
@@ -42,11 +43,13 @@
     </div>
     {% endfor %}
   </div>
+
   <script type="text/javascript">
     (function() {
         document.querySelector('#zone-slots-nojs').classList.add('hidden');
     })();
   </script>
+
   <div class="show-if-js hidden" id="zone-tabs">
     <ul>
       {% for z in zone_list %}
@@ -62,9 +65,58 @@
     </div>
     {% endfor %}
   </div>
+
   <span class="show-if-js hidden" id="del-zone">
     <input id="del-btn" type="checkbox"></input><label for="del-btn">Suppression</label>
   </span>
+
+  <div id="derogation-list">
+    {# derogation_list template var is available in context thanks to "get_context_data" method override in "ZoneList" class #}
+    <h2>Dérogations
+      <a href='{#% url 'new_derogation' %#}'>Nouvelle</a>
+    </h2>
+    <table>
+      <thead><tr>
+          <th>Active</th>
+          <th>Création</th>
+          <th>Prise d'effet</th>
+          <th>Fin d'effet</th>
+          <th>Mode</th>
+          {% for z in zone_list %}
+          <th>Z{{ z.num }}</th>
+          {% endfor %}
+      </tr></thead>
+      <tbody>
+        {% for d in derogation_list %}
+        <tr>
+          <td><span class="derog-check">
+            {% if d.active %}X{% endif %}
+          </span></td>
+          <td>{{ d.creation_dt|date:"d F Y H:i" }}</td>
+          <td>{{ d.start_dt|date:"d F Y H:i" }}</td>
+          <td>{{ d.end_dt|date:"d F Y H:i" }}</td>
+          <td>{{ d.get_mode_display }}</td>
+          {% for z in zone_list %}
+          <td><span class="derog-check">
+             {% if z in d.zones.all %}X{% endif %}
+          </span></td>
+          {% endfor %}
+          <td class="urls">
+            <a href='{#% url 'del_derogation' pk=d.pk %#}'>Supprimer</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan='{{ zone_list.count|add:5 }}'>
+            Aucune dérogation
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
   <div id="form-container"></div>
+
 {% endblock %}
     

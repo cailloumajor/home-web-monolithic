@@ -30,6 +30,13 @@ require(
         $(this).button('option', 'icons', {primary: icon, secondary: icon});
     });
     $('#del-zone').detach().appendTo('#zone-tabs .ui-tabs-nav')
+    $('#derogation-list').addClass(
+        'ui-widget ui-widget-content ui-corner-all derogation-js'
+    ).children('h2').addClass(
+        'ui-widget-header ui-corner-all'
+    ).children('a').button();
+    $('#derogation-list .urls a').button();
+    $(".derog-check:contains('X')").addClass('ui-icon ui-icon-check');
     $body = $('body');
     $(document).on({
         ajaxStart: function() {$body.addClass('loading');},
