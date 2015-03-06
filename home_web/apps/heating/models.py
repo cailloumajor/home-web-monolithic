@@ -67,7 +67,6 @@ class Derogation(ModeBase):
     )
     start_dt = models.DateTimeField(verbose_name="date/heure de prise d'effet")
     end_dt = models.DateTimeField(verbose_name="date/heure de fin d'effet")
-    active = models.BooleanField(default=False, editable=False)
     zones = models.ManyToManyField(Zone)
     objects = DerogationQuerySet.as_manager()
 
@@ -80,3 +79,6 @@ class Derogation(ModeBase):
             dt_conv(self.start_dt), dt_conv(self.end_dt), self.mode,
             '-'.join([str(z) for z in self.zones.all()])
         )
+
+    def active(self):
+        return self.__class__.objects.filter(pk=self.pk).is_active().exists()
