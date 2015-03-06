@@ -68,6 +68,9 @@ class Derogation(ModeBase):
     active = models.BooleanField(default=False, editable=False)
     zones = models.ManyToManyField(Zone)
 
+    class Meta():
+        ordering = ['creation_dt']
+
     def __str__(self):
         dt_conv = lambda dt: timezone.localtime(dt).strftime('%d/%m-%H:%M')
         return "%s->%s %s %s" % (
