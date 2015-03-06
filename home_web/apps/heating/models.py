@@ -3,6 +3,8 @@
 from django.db import models
 from django.utils import timezone
 
+from .managers import DerogationQuerySet
+
 class Zone(models.Model):
     NUM_CHOICES = tuple([(i, i) for i in range(1, 5)])
     num = models.PositiveSmallIntegerField(
@@ -67,6 +69,7 @@ class Derogation(ModeBase):
     end_dt = models.DateTimeField(verbose_name="date/heure de fin d'effet")
     active = models.BooleanField(default=False, editable=False)
     zones = models.ManyToManyField(Zone)
+    objects = DerogationQuerySet.as_manager()
 
     class Meta():
         ordering = ['creation_dt']
