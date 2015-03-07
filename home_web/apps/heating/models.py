@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils import timezone
 
-from .managers import DerogationQuerySet
+from .managers import SlotQuerySet, DerogationQuerySet
 
 class Zone(models.Model):
     NUM_CHOICES = tuple([(i, i) for i in range(1, 5)])
@@ -49,6 +49,7 @@ class Slot(ModeBase):
     sun = models.BooleanField(verbose_name="dimanche", default=False)
     start_time = models.TimeField(verbose_name="heure de début")
     end_time = models.TimeField(verbose_name="heure de fin")
+    objects = SlotQuerySet.as_manager()
 
     def __str__(self):
         days_fields_list = [
