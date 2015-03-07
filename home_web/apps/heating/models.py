@@ -67,8 +67,8 @@ class Derogation(ModeBase):
     creation_dt = models.DateTimeField(
         verbose_name="date/heure de création", auto_now_add=True
     )
-    start_dt = models.DateTimeField(verbose_name="date/heure de prise d'effet")
-    end_dt = models.DateTimeField(verbose_name="date/heure de fin d'effet")
+    start_dt = models.DateTimeField(verbose_name="prise d'effet")
+    end_dt = models.DateTimeField(verbose_name="fin d'effet")
     zones = models.ManyToManyField(Zone)
     objects = DerogationQuerySet.as_manager()
 
