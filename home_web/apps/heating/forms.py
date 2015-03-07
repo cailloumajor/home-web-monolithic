@@ -24,44 +24,6 @@ class OffsetTimeWidget(widgets.TimeInput):
                 ).time()
         return super(OffsetTimeWidget, self).render(name, value, attrs)
 
-
-class TimeSelectorWidget(widgets.MultiWidget):
-    """"
-    Plus utilisé
-    """
-    def __init__(self, attrs=None, needs_shift=False):
-        self._min_delta = 0
-        if needs_shift:
-            self._min_delta = 1
-        tup_int_str = lambda x: [(y, str(y).zfill(2)) for y in x]
-        HOURS = tup_int_str(range(24))
-        MINUTES = tup_int_str(range(0,60,15))
-        _widgets = (
-            widgets.Select(attrs=attrs, choices=HOURS),
-            widgets.Select(attrs=attrs, choices=MINUTES),
-        )
-        super(TimeSelectorWidget, self).__init__(_widgets, attrs)
-
-    def decompress(self, value):
-        if value:
-            show_time = datetime.datetime(1, 1, 1, value.hour, value.minute) + \
-                        datetime.timedelta(minutes=self._min_delta)
-            return [str(show_time.hour), str(show_time.minute)]
-        return [None, None]
-
-    def value_from_datadict(self, data, files, name):
-        timelist = [
-            wid.value_from_datadict(data, files, name + '_%s' % i)
-            for i, wid in enumerate(self.widgets)
-        ]
-        try:
-            dt = datetime.datetime(1, 1, 2, int(timelist[0]), int(timelist[1])) - \
-                 datetime.timedelta(minutes=self._min_delta)
-        except ValueError:
-            return ''
-        else:
-            return dt.time()
-
 class SlotForm(forms.ModelForm):
     class Meta:
         model = Slot
