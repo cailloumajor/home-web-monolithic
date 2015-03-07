@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils import timezone
 
-from .managers import SlotQuerySet, DerogationQuerySet
+from .managers import ZoneManager, SlotQuerySet, DerogationQuerySet
 
 class Zone(models.Model):
     NUM_CHOICES = tuple([(i, i) for i in range(1, 5)])
@@ -15,6 +15,7 @@ class Zone(models.Model):
         verbose_name="description",
         max_length=50,
         blank=True)
+    objects = ZoneManager()
 
     class Meta:
         ordering = ['num']
