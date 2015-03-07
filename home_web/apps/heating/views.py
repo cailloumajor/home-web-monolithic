@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
 
-import datetime
-
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -69,23 +67,6 @@ class ModeAPI(View):
     http_method_names = ['get']
 
     def get(self, request, *args, **kwargs):
-        errors = []
         data = {}
-        if errors:
-            data['errors'] = errors
-            return JsonResponse(data, status=400)
-        modes = {}
-        now = datetime.datetime.now()
-        day = [
-            'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
-        ][now.weekday()]
-        time = now.time()
-        for zone in Zone.objects.all():
-            try:
-                modes[zone.num] = zone.slot_set.filter(**{day: True}).get(
-                    start_time__lte = time, end_time__gte = time
-                ).mode
-            except:
-                modes[zone.num] = 'C'
-        data['modes'] = modes
+        data['modes'] = Zone.objects.get_modes()
         return JsonResponse(data)
