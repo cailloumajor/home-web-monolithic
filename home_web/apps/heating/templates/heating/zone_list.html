@@ -73,7 +73,7 @@
   <div id="derogation-list">
     {# derogation_list template var is available in context thanks to "get_context_data" method override in "ZoneList" class #}
     <h2>Dérogations
-      <a href='{#% url 'new_derogation' %#}'>Nouvelle</a>
+      <a href='{% url 'new_derog' %}'>Nouvelle</a>
     </h2>
     <table>
       <thead><tr>
