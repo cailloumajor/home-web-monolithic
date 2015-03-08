@@ -15,5 +15,9 @@ function($) {
             $('#derogation-list .urls a').button();
             $(".derog-check:contains('X')").addClass('ui-icon ui-icon-check');
         },
+        update: function() {
+            var self = this;
+            $('#derog-table-container').load('derogation/', self.arrange);
+        },
     };
 });
