@@ -2,16 +2,16 @@
     text-align: center;
 }
 
-#slot-form .line {
+.heating-form .line {
     margin-bottom: 12px;
 }
 
-#slot-form label:not(.ui-button) {
+.heating-form label:not(.ui-button) {
     font-weight: bold;
     margin-right: 5px;
 }
 
-#slot-form input[type="text"] {
+.heating-form input[type="text"] {
     text-align: center;
 }
 
@@ -19,12 +19,18 @@
     width: 10px;
 }
 
-#days input, #times input {
+#days input,
+#times input,
+#datetimes input {
     margin-right: 10px;
 }
 
 #id_start_time, #id_end_time {
     width: 35px;
+}
+
+#id_start_dt, #id_end_dt {
+    width: 105px;
 }
 
 #id_mode {
@@ -46,18 +52,18 @@
     margin: 8px 20px 0;
 }
 
-#slot-form .error {
+.heating-form .error {
     background-color: rgba(255, 0, 0, 0.1);
     border: 1px solid #ff9b9b;
     border-radius: 2px;
 }
 
-#slot-form .error:hover {
+.heating-form .error:hover {
     border-width: 1px;
     border-color: #ff3232;
 }
 
-#slot-form .errorlist {
+.heating-form .errorlist {
     color: red;
     font-size: 0.9em;
     font-weight: bold;
@@ -67,11 +73,13 @@
     text-transform: uppercase;
 }
 
-#times .errorlist:first-of-type:not(:only-of-type) {
+#times .errorlist:first-of-type:not(:only-of-type),
+#datetimes .errorlist:first-of-type:not(:only-of-type) {
     margin-bottom: 0;
 }
 
-#times .errorlist:last-of-type:not(:only-of-type) {
+#times .errorlist:last-of-type:not(:only-of-type),
+#datetimes .errorlist:last-of-type:not(:only-of-type) {
     margin-top: 0;
 }
 
