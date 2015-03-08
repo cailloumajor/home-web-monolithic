@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.forms import widgets
 from django import forms
 
-from .models import Slot
+from .models import Slot, Derogation
 from functools import reduce
 
 def validate_quarter_hour(value):
@@ -91,3 +91,19 @@ class SlotForm(forms.ModelForm):
                 )
 
         return cl_data
+
+class DerogationForm(forms.ModelForm):
+    class Meta():
+        model = Derogation
+        fields = ['zones', 'start_dt', 'end_dt', 'mode']
+        widgets = {
+            'start_dt': widgets.DateTimeInput(format="%d/%m/%Y %H:%M"),
+            'end_dt': widgets.DateTimeInput(format="%d/%m/%Y %H:%M"),
+            'mode': widgets.RadioSelect,
+        }
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(DerogationForm, self).__init__(*args, **kwargs)
+        self.fields['start_dt'].input_formats = ["%d/%m/%Y %H:%M"]
+        self.fields['end_dt'].input_formats = ["%d/%m/%Y %H:%M"]

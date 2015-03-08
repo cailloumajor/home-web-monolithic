@@ -4,9 +4,10 @@ from django.views.generic import View, ListView, CreateView, UpdateView, DeleteV
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import JsonResponse
+from django.utils import timezone
 
 from .models import Slot, Zone, Derogation
-from .forms import SlotForm
+from .forms import SlotForm, DerogationForm
 
 class AjaxResponseMixin(object):
     def form_valid(self, form):
@@ -62,6 +63,17 @@ class SlotUpdate(AjaxResponseMixin, UpdateView):
 class SlotDelete(AjaxResponseMixin, DeleteView):
     model = Slot
     success_url = reverse_lazy('zone_list')
+
+class DerogationCreate(AjaxResponseMixin, CreateView):
+    model = Derogation
+    form_class = DerogationForm
+    success_url = reverse_lazy('zone_list')
+
+    def get_initial(self):
+        initial = super(DerogationCreate, self).get_initial()
+        initial = initial.copy()
+        initial['start_dt'] = timezone.now()
+        return initial
 
 class ModeAPI(View):
     http_method_names = ['get']
