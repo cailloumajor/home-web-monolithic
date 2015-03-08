@@ -12,11 +12,11 @@ require.config({
 
 require(
     [
-        'jquery', 'app/init_canvas', 'app/slots',
+        'jquery', 'app/init_canvas', 'app/slots', 'app/derogations',
         'jquery-ui/tabs', 'jquery-ui/button', 'jquery-ui/effect-fade',
         'domReady!'
     ],
-    function($, initCanvas, slots)
+    function($, initCanvas, slots, derog)
 {
     $.ajaxSetup({timeout:5000});
     $('#zone-tabs').tabs();
@@ -30,14 +30,8 @@ require(
         icon = this.checked ? 'ui-icon-alert' : null;
         $(this).button('option', 'icons', {primary: icon, secondary: icon});
     });
-    $('#del-zone').detach().appendTo('#zone-tabs .ui-tabs-nav')
-    $('#derogation-list').addClass(
-        'ui-widget ui-widget-content ui-corner-all derogation-js'
-    ).children('h2').addClass(
-        'ui-widget-header ui-corner-all'
-    ).children('a').button();
-    $('#derogation-list .urls a').button();
-    $(".derog-check:contains('X')").addClass('ui-icon ui-icon-check');
+    $('#del-zone').detach().appendTo('#zone-tabs .ui-tabs-nav');
+    derog.init();
     $body = $('body');
     $(document).on({
         ajaxStart: function() {$body.addClass('loading');},
