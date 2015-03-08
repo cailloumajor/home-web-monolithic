@@ -64,6 +64,14 @@ class SlotDelete(AjaxResponseMixin, DeleteView):
     model = Slot
     success_url = reverse_lazy('zone_list')
 
+class DerogationList(ListView):
+    model = Derogation
+
+    def get_context_data(self, **kwargs):
+        context = super(DerogationList, self).get_context_data(**kwargs)
+        context['zone_list'] = Zone.objects.all()
+        return context
+
 class DerogationCreate(AjaxResponseMixin, CreateView):
     model = Derogation
     form_class = DerogationForm
