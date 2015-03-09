@@ -17,5 +17,9 @@ urlpatterns = patterns(
     url(r'^slot/(?P<pk>\d+)/delete/$', views.SlotDelete.as_view(), name='del_slot'),
     url(r'^derogation/$', views.DerogationList.as_view(), name='derog_list'),
     url(r'^derogation/new/$', views.DerogationCreate.as_view(), name='new_derog'),
+    url(
+        r'^derogation/(?P<pk>\d+)/delete/$',
+        views.DerogationDelete.as_view(), name='del_derog'
+    ),
     url(r'^api/', include(api_patterns)),
 )

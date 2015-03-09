@@ -83,6 +83,10 @@ class DerogationCreate(AjaxResponseMixin, CreateView):
         initial['start_dt'] = timezone.now()
         return initial
 
+class DerogationDelete(AjaxResponseMixin, DeleteView):
+    model = Derogation
+    success_url = reverse_lazy('zone_list')
+
 class ModeAPI(View):
     http_method_names = ['get']
 
