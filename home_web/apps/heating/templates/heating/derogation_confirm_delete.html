@@ -1,0 +1,11 @@
+{% extends request.is_ajax|yesno:"heating/ajax_form_base.html,heating/heating_base.html" %}
+
+{% block content %}
+  <form action='{{ request.path }}' class="heating-form" id="slot-del-form" method="post">
+    {% csrf_token %}
+    <h2>Supprimer cette dérogation ?</h2>
+    <p>{{ derogation }}</p>
+    <input class="form-btn" type="submit" value="OUI">
+    <a href='{% url 'zone_list' %}' id="cancel-anchor">NON</a>
+  </form>
+{% endblock %}

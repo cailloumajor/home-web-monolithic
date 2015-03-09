@@ -25,7 +25,7 @@
           </span></td>
         {% endfor %}
         <td class="urls">
-          <a href='{#% url 'del_derogation' pk=d.pk %#}'>Supprimer</a>
+          <a href='{% url 'del_derog' pk=d.pk %}'>Supprimer</a>
         </td>
       </tr>
       {% empty %}
