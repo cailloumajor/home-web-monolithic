@@ -42,7 +42,7 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                 dialogTitle = 'Suppression de créneau';
                 dialogWidth = 300;
                 $('#cancel-anchor').remove();
-                $('#slot-del-form h2').addClass("ui-widget ui-state-highlight ui-corner-all");
+                this.$that.children('h2').addClass("ui-widget ui-state-highlight ui-corner-all");
                 break;
             }
             $('<input>', {
