@@ -9,12 +9,15 @@ require.config({
     },
 });
 
-require(['jquery', 'app/init_canvas', 'app/slots', 'jquery-ui/tabs', 'jquery-ui/button', 'domReady!'],
-        function($, initCanvas, slots)
+require(
+    [
+        'jquery', 'app/init_canvas', 'app/slots',
+        'jquery-ui/tabs', 'jquery-ui/button', 'jquery-ui/effect-fade',
+        'domReady!'
+    ],
+    function($, initCanvas, slots)
 {
     $.ajaxSetup({timeout:5000});
-    $('.hide-if-js').addClass('hidden');
-    $('.show-if-js').removeClass('hidden');
     $('#zone-tabs').tabs();
     $('.zone-canvas').each(function() {
         initCanvas($(this));
@@ -29,4 +32,8 @@ require(['jquery', 'app/init_canvas', 'app/slots', 'jquery-ui/tabs', 'jquery-ui/
         ajaxStart: function() {$body.addClass('loading');},
         ajaxStop: function() {$body.removeClass('loading');},
     });
+    $('.show-if-js').show({
+        effect: 'fade',
+        duration: 150,
+    }).removeClass('hidden');
 });

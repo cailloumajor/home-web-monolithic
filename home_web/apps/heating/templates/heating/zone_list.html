@@ -1,7 +1,7 @@
 {% extends "heating/heating_base.html" %}
 
 {% block content %}
-  <div class="hide-if-js">
+  <div id="zone-slots-nojs">
   {% for z in zone_list %}
     <div class="zone-slots" id='zone-slots-z{{ z.num }}'>
       <h2>Zone {{ z.num }}&nbsp;
@@ -42,6 +42,11 @@
     </div>
     {% endfor %}
   </div>
+  <script type="text/javascript">
+    (function() {
+        document.querySelector('#zone-slots-nojs').classList.add('hidden');
+    })();
+  </script>
   <div class="show-if-js hidden" id="zone-tabs">
     <ul>
       {% for z in zone_list %}
