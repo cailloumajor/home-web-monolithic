@@ -24,28 +24,29 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
             case 'slot-form':
                 dialogTitle = 'Ajout / modification de créneau';
                 dialogWidth = 560;
-                $('#mode-choices label').unwrap().unwrap().each(function() {
-                    $(this).before($(this).children('input'));
-                });
-                $('#days, #mode-choices').buttonset();
-                $('#id_start_time, #id_end_time').attr('readonly', 'true').timepicker({
-                    showPeriodLabels: false,
-                    defaultTime: '',
-                    hourText: 'Heures',
-                    minuteText: 'Min.',
-                    myPosition: 'center top',
-                    atPosition: 'center bottom',
-                    minutes: {interval: 15},
-                    showAnim: null,
-                });
                 break;
             case 'slot-del-form':
                 dialogTitle = 'Suppression de créneau';
                 dialogWidth = 300;
-                $('#cancel-anchor').remove();
-                this.$that.children('h2').addClass("ui-widget ui-state-highlight ui-corner-all");
                 break;
             }
+            $('#mode-choices label').unwrap().unwrap().each(function() {
+                $(this).before($(this).children('input'));
+            });
+            $('#days, #mode-choices').buttonset();
+            $('#id_start_time, #id_end_time').attr('readonly', 'true').timepicker({
+                showPeriodLabels: false,
+                defaultTime: '',
+                hourText: 'Heures',
+                minuteText: 'Min.',
+                myPosition: 'center top',
+                atPosition: 'center bottom',
+                minutes: {interval: 15},
+                showAnim: null,
+            });
+            $('#cancel-anchor').remove();
+            $('h2', this.$that).addClass("ui-widget ui-state-highlight ui-corner-all");
+            // Common part
             $('<input>', {
                 'class': 'form-btn',
                 type: 'button',
