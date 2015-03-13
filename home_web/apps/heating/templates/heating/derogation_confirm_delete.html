@@ -1,7 +1,7 @@
 {% extends request.is_ajax|yesno:"heating/ajax_form_base.html,heating/heating_base.html" %}
 
 {% block content %}
-  <form action='{{ request.path }}' class="heating-form" id="slot-del-form" method="post">
+  <form action='{{ request.path }}' class="heating-form" id="derogation-del-form" method="post">
     {% csrf_token %}
     <h2>Supprimer cette dérogation ?</h2>
     <p>{{ derogation }}</p>

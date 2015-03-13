@@ -83,7 +83,8 @@
     margin-top: 0;
 }
 
-#slot-del-form h2 {
+#slot-del-form h2,
+#derogation-del-form h2 {
     margin-top: 0;
     padding: 10px;
 }

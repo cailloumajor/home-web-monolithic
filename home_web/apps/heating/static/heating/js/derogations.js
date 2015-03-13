@@ -15,9 +15,13 @@ function($, form) {
             this.arrange();
         },
         arrange: function() {
+            var self = this;
             $('#derogation-list .urls a').button({
                 icons: { primary: 'ui-icon-trash' },
                 text: false,
+            }).click(function(event) {
+                event.preventDefault();
+                form.load($(this).attr('href'), self.update, self);
             });
             $(".derog-check:contains('X')").addClass('ui-icon ui-icon-check');
         },

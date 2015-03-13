@@ -36,6 +36,10 @@ define(
                 dialogTitle = 'Nouvelle dérogation';
                 dialogWidth = 420;
                 break;
+            case 'derogation-del-form':
+                dialogTitle = 'Suppression de dérogation';
+                dialogWidth = 300;
+                break;
             }
             $('#mode-choices label').unwrap().unwrap().each(function() {
                 $(this).before($(this).children('input'));
