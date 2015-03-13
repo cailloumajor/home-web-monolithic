@@ -15,7 +15,10 @@ function($, form) {
             this.arrange();
         },
         arrange: function() {
-            $('#derogation-list .urls a').button();
+            $('#derogation-list .urls a').button({
+                icons: { primary: 'ui-icon-trash' },
+                text: false,
+            });
             $(".derog-check:contains('X')").addClass('ui-icon ui-icon-check');
         },
         update: function() {
