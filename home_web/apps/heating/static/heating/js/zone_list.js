@@ -7,6 +7,7 @@ require.config({
         'jcanvas': ['jquery'],
         'jquery-ui-timepicker': ['jquery', 'jquery-ui/core', 'jquery-ui/position'],
         'jquery-multiselect': ['jquery', 'jquery-ui/widget'],
+        'jquery-datetimepicker': ['jquery'],
     },
 });
 
