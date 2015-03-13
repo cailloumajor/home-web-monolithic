@@ -1,5 +1,8 @@
-define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
-       function($) {
+define(
+    ['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog',
+     'jquery-multiselect', 'jquery-datetimepicker'],
+    function($)
+{
     return {
         $that: null,
         callback: null,
@@ -29,6 +32,10 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                 dialogTitle = 'Suppression de créneau';
                 dialogWidth = 300;
                 break;
+            case 'derogation-form':
+                dialogTitle = 'Nouvelle dérogation';
+                dialogWidth = 420;
+                break;
             }
             $('#mode-choices label').unwrap().unwrap().each(function() {
                 $(this).before($(this).children('input'));
@@ -43,6 +50,21 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                 atPosition: 'center bottom',
                 minutes: {interval: 15},
                 showAnim: null,
+            });
+            $('#id_zones').multiselect({
+                header: false,
+                height: 'auto',
+                minWidth: 110,
+                noneSelectedText: 'Choisir',
+                selectedList: 4,
+            });
+            $('#id_start_dt, #id_end_dt').attr('readonly', 'true').datetimepicker({
+                lang: 'fr',
+                format: 'd/m/Y H:i',
+                step: 15,
+                minDate: 0,
+                defaultSelect: false,
+                dayOfWeekStart: 1,
             });
             $('#cancel-anchor').remove();
             $('h2', this.$that).addClass("ui-widget ui-state-highlight ui-corner-all");
@@ -100,6 +122,13 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                         break;
                     case 'mode':
                         $ul.appendTo('#mode');
+                        break;
+                    case 'zones':
+                        $ul.appendTo('#zones');
+                        break;
+                    case 'start_dt':
+                    case 'end_dt':
+                        $ul.appendTo('#datetimes');
                         break;
                     }
                 }

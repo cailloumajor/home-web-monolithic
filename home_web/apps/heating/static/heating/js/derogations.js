@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'jquery-ui/button'],
-function($) {
+    ['jquery', 'app/form', 'jquery-ui/button'],
+function($, form) {
     return {
         init: function() {
             var self = this;
@@ -8,7 +8,10 @@ function($) {
                 'ui-widget ui-widget-content ui-corner-all derogation-js'
             ).children('h2').addClass(
                 'ui-widget-header ui-corner-all'
-            ).children('a').button();
+            ).children('a').button().click(function(event) {
+                event.preventDefault();
+                form.load($(this).attr('href'), self.update, self);
+            });
             this.arrange();
         },
         arrange: function() {
