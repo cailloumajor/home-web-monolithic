@@ -28,16 +28,13 @@ define(
                 dialogTitle = 'Ajout / modification de créneau';
                 dialogWidth = 560;
                 break;
-            case 'slot-del-form':
-                dialogTitle = 'Suppression de créneau';
-                dialogWidth = 300;
-                break;
             case 'derogation-form':
                 dialogTitle = 'Nouvelle dérogation';
                 dialogWidth = 420;
                 break;
+            case 'slot-del-form':
             case 'derogation-del-form':
-                dialogTitle = 'Suppression de dérogation';
+                dialogTitle = 'Confirmer la suppression';
                 dialogWidth = 300;
                 break;
             }
