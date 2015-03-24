@@ -6,3 +6,4 @@ nodeenv
 pyinotify
 selenium
 xvfbwrapper
+page_objects
