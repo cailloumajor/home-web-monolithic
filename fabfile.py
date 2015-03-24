@@ -79,7 +79,7 @@ def _test_repo():
         abort("Abort at user request")
 
 def _django_tests():
-    local("python manage.py test")
+    local("python -Wall manage.py test")
 
 @task
 def collect_static():
