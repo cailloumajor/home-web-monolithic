@@ -76,6 +76,9 @@ def _test_repo():
             yellow("Continue anyway ?"))):
         abort("Abort at user request")
 
+def _django_tests():
+    local("python manage.py test")
+
 @task
 def collect_static():
     env.static = TemporaryStaticDir()
@@ -116,6 +119,7 @@ def deploy_www():
 @task(default=True)
 def deploy():
     _test_repo()
+    _django_tests()
     deploy_static()
     deploy_www()
 
