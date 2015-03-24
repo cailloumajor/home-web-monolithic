@@ -69,6 +69,8 @@ def _rsync_project(*args, **kwargs):
     return out
 
 def _test_repo():
+    if local("git symbolic-ref --short -q HEAD", capture=True) != 'master':
+        abort("Not on 'master' branch !")
     result = local("git status --porcelain", capture=True)
     if result and not console.confirm("{0} {1}\n{2}".format(
             yellow("Git repository not clean :\n"),
