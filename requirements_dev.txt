@@ -4,3 +4,5 @@ ipython
 fabric
 nodeenv
 pyinotify
+selenium
+xvfbwrapper
