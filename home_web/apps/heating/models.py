@@ -43,12 +43,12 @@ class Slot(models.Model):
     )
 
     def __unicode__(self):
-        days_fileds_list = [
+        days_fields_list = [
             self.mon, self.tue, self.wed, self.thu,
             self.fri, self.sat, self.sun
         ]
         days_string = "".join([d if b else "*"
-                               for (d, b) in zip('LMMJVSD', days_fileds_list)])
+                               for (d, b) in zip('LMMJVSD', days_fields_list)])
         return u'%s %s-%s [%s] %s' % (self.zone, self.start_time,
                                       self.end_time, days_string,
                                       self.get_mode_display())
