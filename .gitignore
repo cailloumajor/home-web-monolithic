@@ -1,2 +1,4 @@
 *.pyc
 fab_hosts
+.coverage
+htmlcov/
