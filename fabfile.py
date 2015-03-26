@@ -18,6 +18,7 @@ WWW_EXCLUDE = (
     '/requirements_dev.txt',
     '/tmp/',
     'static/',
+    '.coveragerc',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
@@ -117,6 +118,12 @@ def deploy_www():
         delete=True, exclude=WWW_EXCLUDE,
         extra_opts="--delete-excluded --filter=':- .gitignore'",
     )
+
+@task
+def coverage():
+    shutil.rmtree('htmlcov')
+    local("coverage run manage.py test -v2")
+    local("coverage html")
 
 @task(default=True)
 def deploy():
