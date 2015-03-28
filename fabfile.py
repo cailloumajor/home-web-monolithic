@@ -3,6 +3,7 @@
 import os
 import tempfile
 import shutil
+import errno
 
 from fabric.api import *
 from fabric.colors import green, yellow
@@ -122,7 +123,13 @@ def deploy_www():
 
 @task
 def coverage():
-    shutil.rmtree('htmlcov')
+    try:
+        shutil.rmtree('htmlcov')
+    except OSError as e:
+        if e.errno == errno.ENOENT:
+            pass
+        else:
+            raise
     local("coverage run manage.py test -v2")
     local("coverage html")
 
