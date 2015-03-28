@@ -39,13 +39,19 @@ class SlotViewsTest(TestCase):
         self._slot = create_slot(self._zone, 'E')
             
     def test_slot_create_view(self):
-        response = self.client.get(reverse('new_slot', kwargs={'zone':self._zone.num}))
+        response = self.client.get(
+            reverse('new_slot', kwargs={'zone':self._zone.num})
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_slot_update_view(self):
-        response = self.client.get(reverse('update_slot', kwargs={'pk':self._slot.pk}))
+        response = self.client.get(
+            reverse('update_slot', kwargs={'pk':self._slot.pk})
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_slot_delete_view(self):
-        response = self.client.get(reverse('del_slot', kwargs={'pk':self._slot.pk}))
+        response = self.client.get(
+            reverse('del_slot', kwargs={'pk':self._slot.pk})
+        )
         self.assertEqual(response.status_code, 200)
