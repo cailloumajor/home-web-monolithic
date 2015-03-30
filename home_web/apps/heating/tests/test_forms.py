@@ -113,3 +113,17 @@ class SlotFormTest(TestCase):
             )
             self.assertRedirects(response, reverse('zone_list'))
         self.assertEqual(Slot.objects.filter(zone__num=1).count(), 8)
+
+class SlotDeleteTest(TestCase):
+
+    def test_slot_delete_form_valid(self):
+        z = Zone.objects.create(num=1, desc="Test zone")
+        s = Slot.objects.create(
+            zone=z, mon=True, mode='E',
+            start_time=datetime.time(4), end_time=datetime.time(6),
+        )
+        self.assertEqual(Slot.objects.all().get(), s)
+        response = self.client.post(reverse('del_slot', kwargs={'pk':s.pk}))
+        self.assertRedirects(response, reverse('zone_list'))
+        with self.assertRaises(Slot.DoesNotExist):
+            Slot.objects.get(pk=s.pk)
