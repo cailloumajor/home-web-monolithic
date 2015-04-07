@@ -12,3 +12,7 @@ class BasePage(PageObject):
     @property
     def title(self):
         return self.w.title
+
+
+class HomePage(BasePage):
+    url = '/heating/'
