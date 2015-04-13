@@ -16,3 +16,6 @@ class BasePage(PageObject):
 
 class HomePage(BasePage):
     url = '/heating/'
+    canvas_z1 = PageElement(id_='can-z1')
+    canvas_z2 = PageElement(id_='can-z2')
+    tabbtn_z2 = PageElement(xpath="//a[@href='#tab-z2']")

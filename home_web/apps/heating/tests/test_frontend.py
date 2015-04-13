@@ -46,3 +46,10 @@ class HomePageTest(FrontendTestCase):
 
     def test_title(self):
         self.assertEqual(self.page.title, 'Gestion du chauffage')
+
+    def test_tab_content_visibility(self):
+        self.assertTrue(self.page.canvas_z1.is_displayed())
+        self.assertFalse(self.page.canvas_z2.is_displayed())
+        self.page.tabbtn_z2.click()
+        self.assertFalse(self.page.canvas_z1.is_displayed())
+        self.assertTrue(self.page.canvas_z2.is_displayed())
