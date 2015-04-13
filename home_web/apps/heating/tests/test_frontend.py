@@ -25,6 +25,8 @@ def tearDownModule():
 
 class FrontendTestCase(StaticLiveServerTestCase):
 
+    fixtures = ['test_frontend.json']
+
     def setUp(self):
         super(FrontendTestCase, self).setUp()
         driver.root_uri = self.live_server_url
