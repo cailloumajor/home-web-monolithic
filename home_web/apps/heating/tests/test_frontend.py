@@ -4,6 +4,9 @@ from __future__ import unicode_literals
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from xvfbwrapper import Xvfb
 
 from .frontend import pages
@@ -32,10 +35,14 @@ class FrontendTestCase(StaticLiveServerTestCase):
         driver.root_uri = self.live_server_url
         self.page = self.page_class(driver)
         self.page.get()
+        wait = WebDriverWait(driver, 5)
+        el = wait.until(EC.visibility_of_element_located(self.ready_locator))
 
 
 class HomePageTest(FrontendTestCase):
+
     page_class = pages.HomePage
+    ready_locator = (By.CLASS_NAME, 'show-if-js')
 
     def test_title(self):
         self.assertEqual(self.page.title, 'Gestion du chauffage')
