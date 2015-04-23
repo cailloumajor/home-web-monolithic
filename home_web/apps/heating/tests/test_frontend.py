@@ -82,3 +82,9 @@ class HomePageTest(FrontendTestCase):
         self.assertAreSameColor(self.slot2, self.page.legend2)
         self.assertAreSameColor(self.slot3, self.page.legend3)
         self.assertAreSameColor(self.slot4, self.page.legend4)
+
+    def test_slots_number_in_group(self):
+        self.assertEqual(self.slot1.count, 7)
+        self.assertEqual(self.slot2.count, 4)
+        self.assertEqual(self.slot3.count, 3)
+        self.assertEqual(self.slot4.count, 1)
