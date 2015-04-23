@@ -19,3 +19,7 @@ class HomePage(BasePage):
     canvas_z1 = PageElement(id_='can-z1')
     canvas_z2 = PageElement(id_='can-z2')
     tabbtn_z2 = PageElement(xpath="//a[@href='#tab-z2']")
+    legend1 = PageElement(id_='legend-add')
+    legend2 = PageElement(id_='legend-E')
+    legend3 = PageElement(id_='legend-H')
+    legend4 = PageElement(id_='legend-A')

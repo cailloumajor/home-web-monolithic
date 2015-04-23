@@ -49,6 +49,7 @@ define(['jquery', 'app/consts', 'jcanvas'],
         for (var key in CST.SLOTS_REPR) {
             var $cont = $('<span>');
             $('<span>', {
+                'id': 'legend-' + key,
                 'class': 'legend-rect',
                 css: {
                     'background-color': CST.SLOTS_REPR[key][2],

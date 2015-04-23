@@ -6,10 +6,12 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.color import Color
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.remote.webelement import WebElement
 from xvfbwrapper import Xvfb
 
-from .frontend import pages
+from .frontend import pages, JCanvasElement
 
 
 def setUpModule():
@@ -38,11 +40,32 @@ class FrontendTestCase(StaticLiveServerTestCase):
         wait = WebDriverWait(driver, 5)
         el = wait.until(EC.visibility_of_element_located(self.ready_locator))
 
+    def assertAreSameColor(self, first, second, msg=None):
+        def get_color(element):
+            if isinstance(element, WebElement):
+                color_rgba = element.value_of_css_property('background-color')
+            elif isinstance(element, JCanvasElement):
+                color_rgba = element.color
+            else:
+                raise TypeError(
+                    "bad element type '{}'".format(type(element).__name__)
+                )
+            return Color.from_string(color_rgba)
+        colors = [get_color(element) for element in [first, second]]
+        self.assertEqual(*colors, msg=msg)
+
 
 class HomePageTest(FrontendTestCase):
 
     page_class = pages.HomePage
     ready_locator = (By.CLASS_NAME, 'show-if-js')
+
+    def setUp(self):
+        super(HomePageTest, self).setUp()
+        self.slot1 = JCanvasElement(self.page.canvas_z1, 'add')
+        self.slot2 = JCanvasElement(self.page.canvas_z1, 'pk-1')
+        self.slot3 = JCanvasElement(self.page.canvas_z1, 'pk-2')
+        self.slot4 = JCanvasElement(self.page.canvas_z1, 'pk-3')
 
     def test_title(self):
         self.assertEqual(self.page.title, 'Gestion du chauffage')
@@ -53,3 +76,9 @@ class HomePageTest(FrontendTestCase):
         self.page.tabbtn_z2.click()
         self.assertFalse(self.page.canvas_z1.is_displayed())
         self.assertTrue(self.page.canvas_z2.is_displayed())
+
+    def test_slot_color_against_legend(self):
+        self.assertAreSameColor(self.slot1, self.page.legend1)
+        self.assertAreSameColor(self.slot2, self.page.legend2)
+        self.assertAreSameColor(self.slot3, self.page.legend3)
+        self.assertAreSameColor(self.slot4, self.page.legend4)
