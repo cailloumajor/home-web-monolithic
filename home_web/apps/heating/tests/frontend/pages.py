@@ -23,3 +23,5 @@ class HomePage(BasePage):
     legend2 = PageElement(id_='legend-E')
     legend3 = PageElement(id_='legend-H')
     legend4 = PageElement(id_='legend-A')
+    del_btn = PageElement(id_='del-btn')
+    slot_del_form = PageElement(id_='slot-del-form')

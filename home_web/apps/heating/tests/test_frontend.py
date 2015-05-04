@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 from xvfbwrapper import Xvfb
 
-from .frontend import pages, JCanvasElement
+from .frontend import pages, JCanvasElement, JCanvasElementNotFound
 
 
 def setUpModule():
@@ -88,3 +88,10 @@ class HomePageTest(FrontendTestCase):
         self.assertEqual(self.slot2.count, 4)
         self.assertEqual(self.slot3.count, 3)
         self.assertEqual(self.slot4.count, 1)
+
+    def test_slot_deletion(self):
+        self.page.del_btn.click()
+        self.slot2.click()
+        self.page.slot_del_form.submit()
+        with self.assertRaises(JCanvasElementNotFound):
+            c = self.slot2.count
