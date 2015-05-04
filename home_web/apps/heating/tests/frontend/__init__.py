@@ -29,25 +29,37 @@ class JCanvasElement(object):
         self._group_name = groupName
 
     def __getattr__(self, name):
-        if name in self._layer_group[0]:
-            return [layer[name] for layer in self._layer_group]
-        else:
-            raise AttributeError(name)
-
-    @property
-    def _layer_group(self):
-        group = self._driver.execute_script(
-            "return $('#{}').getLayerGroup('{}')".format(
-                self._canvas_id, self._group_name
-            )
+        result = self._driver.execute_script(
+            """
+            return (function() {{
+                var group = $('#{canvas_id}').getLayerGroup('{group_name}');
+                if (group === undefined) {{
+                    return 'LayerGroupNotFound';
+                }}
+                var lst = [];
+                for (var i = 0 ; i < group.length ; i++) {{
+                    var prop = group[i]['{prop}'];
+                    if (prop === undefined) {{
+                        return 'PropertyNotFound';
+                    }}
+                    lst.push(prop);
+                }}
+                return lst;
+            }})();
+            """.format(canvas_id=self._canvas_id,
+                       group_name=self._group_name,
+                       prop=name)
         )
-        if not isinstance(group, list):
+        if (result == 'LayerGroupNotFound'):
             raise JCanvasElementNotFound(self._canvas_id, self._group_name)
-        return group
+        elif (result == 'PropertyNotFound'):
+            raise AttributeError(name)
+        else:
+            return result
 
     @property
     def count(self):
-        return len(self._layer_group)
+        return len(self.index)
 
     @property
     def color(self):
