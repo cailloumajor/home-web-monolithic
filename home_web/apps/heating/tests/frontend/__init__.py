@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 class JCanvasElementNotFound(Exception):
 
@@ -78,3 +80,12 @@ class JCanvasElement(object):
         rgb = [int(round((comp / 255.0 * alpha + 1 - alpha) * 255.0))
                for comp in rgba[:3]]
         return 'rgb({},{},{})'.format(*rgb)
+
+    def click(self):
+        action = ActionChains(self._driver)
+        action.move_to_element_with_offset(
+            self._canvas,
+            int(self.x[0]) + 5,
+            int(self.y[0]) + 5
+        )
+        action.click().perform()
