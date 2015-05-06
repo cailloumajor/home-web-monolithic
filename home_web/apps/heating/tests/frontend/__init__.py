@@ -5,14 +5,24 @@ from __future__ import unicode_literals
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-class JCanvasElementNotFound(Exception):
+class JCanvasElementBaseException(Exception):
 
-    def __init__(self, can_id, group_name):
+    def __init__(self, instance):
         message = (
-            "JCanvas object not found "
-            "- id: '{}' - groupName: '{}'".format(can_id, group_name)
+            self.reason +
+            " - id: '{}' - groupName: '{}'".format(
+                instance._canvas_id, instance._group_name
+            )
         )
-        super(JCanvasElementNotFound, self).__init__(message)
+        super(JCanvasElementBaseException, self).__init__(message)
+
+
+class JCanvasElementNotFound(JCanvasElementBaseException):
+    reason = "JCanvas element not found"
+
+
+class JCanvasElementNotVisible(JCanvasElementBaseException):
+    reason = "Could not interact with JCanvas element, canvas is not visible"
 
 
 class JCanvasElement(object):
@@ -53,7 +63,7 @@ class JCanvasElement(object):
                        prop=name)
         )
         if (result == 'LayerGroupNotFound'):
-            raise JCanvasElementNotFound(self._canvas_id, self._group_name)
+            raise JCanvasElementNotFound(self)
         elif (result == 'PropertyNotFound'):
             raise AttributeError(name)
         else:
@@ -82,6 +92,8 @@ class JCanvasElement(object):
         return 'rgb({},{},{})'.format(*rgb)
 
     def click(self):
+        if not self._canvas.is_displayed():
+            raise JCanvasElementNotVisible(self)
         action = ActionChains(self._driver)
         action.move_to_element_with_offset(
             self._canvas,
