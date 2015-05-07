@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 from xvfbwrapper import Xvfb
 
-from .frontend import pages, JCanvasElement, JCanvasElementNotFound
+from .frontend import pages, JCanvasElementContainer, JCanvasElementNotFound
 
 
 def setUpModule():
@@ -44,7 +44,7 @@ class FrontendTestCase(StaticLiveServerTestCase):
         def get_color(element):
             if isinstance(element, WebElement):
                 color_rgba = element.value_of_css_property('background-color')
-            elif isinstance(element, JCanvasElement):
+            elif isinstance(element, JCanvasElementContainer):
                 color_rgba = element.color
             else:
                 raise TypeError(
@@ -60,13 +60,6 @@ class HomePageTest(FrontendTestCase):
     page_class = pages.HomePage
     ready_locator = (By.CLASS_NAME, 'show-if-js')
 
-    def setUp(self):
-        super(HomePageTest, self).setUp()
-        self.slot1 = JCanvasElement(self.page.canvas_z1, 'add')
-        self.slot2 = JCanvasElement(self.page.canvas_z1, 'pk-1')
-        self.slot3 = JCanvasElement(self.page.canvas_z1, 'pk-2')
-        self.slot4 = JCanvasElement(self.page.canvas_z1, 'pk-3')
-
     def test_title(self):
         self.assertEqual(self.page.title, 'Gestion du chauffage')
 
@@ -78,20 +71,20 @@ class HomePageTest(FrontendTestCase):
         self.assertTrue(self.page.canvas_z2.is_displayed())
 
     def test_slot_color_against_legend(self):
-        self.assertAreSameColor(self.slot1, self.page.legend1)
-        self.assertAreSameColor(self.slot2, self.page.legend2)
-        self.assertAreSameColor(self.slot3, self.page.legend3)
-        self.assertAreSameColor(self.slot4, self.page.legend4)
+        self.assertAreSameColor(self.page.slot1, self.page.legend1)
+        self.assertAreSameColor(self.page.slot2, self.page.legend2)
+        self.assertAreSameColor(self.page.slot3, self.page.legend3)
+        self.assertAreSameColor(self.page.slot4, self.page.legend4)
 
     def test_slots_number_in_group(self):
-        self.assertEqual(self.slot1.count, 7)
-        self.assertEqual(self.slot2.count, 4)
-        self.assertEqual(self.slot3.count, 3)
-        self.assertEqual(self.slot4.count, 1)
+        self.assertEqual(self.page.slot1.count, 7)
+        self.assertEqual(self.page.slot2.count, 4)
+        self.assertEqual(self.page.slot3.count, 3)
+        self.assertEqual(self.page.slot4.count, 1)
 
     def test_slot_deletion(self):
         self.page.del_btn.click()
-        self.slot2.click()
+        self.page.slot2.click()
         self.page.slot_del_form.submit()
         with self.assertRaises(JCanvasElementNotFound):
-            c = self.slot2.count
+            c = self.page.slot2.count

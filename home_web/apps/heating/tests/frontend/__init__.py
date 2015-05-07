@@ -25,7 +25,7 @@ class JCanvasElementNotVisible(JCanvasElementBaseException):
     reason = "Could not interact with JCanvas element, canvas is not visible"
 
 
-class JCanvasElement(object):
+class JCanvasElementContainer(object):
     """JCanvas layer group representation.
 
     :param canvas: `page_objects.PageElement`
@@ -34,10 +34,10 @@ class JCanvasElement(object):
         The name of the JCanvas layer group
     """
 
-    def __init__(self, canvas, groupName):
+    def __init__(self, canvas, driver, groupName):
         self._canvas = canvas
         self._canvas_id = canvas.get_attribute('id')
-        self._driver = canvas.parent
+        self._driver = driver
         self._group_name = groupName
 
     def __getattr__(self, name):
@@ -101,3 +101,19 @@ class JCanvasElement(object):
             int(self.y[0]) + 5
         )
         action.click().perform()
+
+
+class JCanvasElement(object):
+
+    def __init__(self, canvas_element, groupName):
+        self._canvas_element = canvas_element
+        self._group_name = groupName
+
+    def __get__(self, instance, owner):
+        if not instance:
+            return None
+        return JCanvasElementContainer(
+            instance.w.find_element(*self._canvas_element.locator),
+            instance.w,
+            self._group_name
+        )
