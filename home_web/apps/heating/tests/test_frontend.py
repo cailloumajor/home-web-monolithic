@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import os
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -18,8 +20,19 @@ def setUpModule():
     global xserver
     global driver
     xserver = Xvfb(width=1360, height=768, nolisten='tcp')
-    xserver.start()
-    driver = webdriver.Firefox()
+    remote_host = os.environ.get('REMOTE_WD')
+    if remote_host is None:
+        xserver.start()
+        driver = webdriver.Firefox()
+    else:
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect((remote_host, 4444))
+        os.environ.setdefault('DJANGO_LIVE_TEST_SERVER_ADDRESS',
+                              '{}:8081'.format(s.getsockname()[0]))
+        s.close()
+        driver = webdriver.Remote('http://{}:4444/wd/hub'.format(remote_host),
+                                  webdriver.DesiredCapabilities.FIREFOX.copy())
     driver.maximize_window()
     driver.implicitly_wait(2)
 
@@ -39,6 +52,39 @@ class FrontendTestCase(StaticLiveServerTestCase):
         self.page.get()
         wait = WebDriverWait(driver, 5)
         el = wait.until(EC.visibility_of_element_located(self.ready_locator))
+        if type(driver) is webdriver.Remote:
+            driver.root_uri = 'http://192.168.1.20:8081'
+            script = (
+                """
+                $('body').css('position', 'relative');
+                $('<div>', {{
+                    'id': 'test-id',
+                    text: '{test_info}',
+                    css: {{
+                        'background-color': 'yellow',
+                        'position': 'absolute',
+                        'top': '0', 'right': '0',
+                        'cursor': 'pointer',
+                    }},
+                    click: function() {{
+                        $(this).attr('id', 'next-test');
+                    }},
+                }}).appendTo('body');
+                """.format(test_info=self.id())
+            )
+            driver.execute_script(script)
+
+    def tearDown(self):
+        if type(driver) is webdriver.Remote:
+            driver.execute_script(
+                ("$('#test-id').css('background-color', 'red')"
+                 ".append(' >> CLICK FOR NEXT TEST <<');")
+            )
+            wait = WebDriverWait(driver, 300)
+            el = wait.until(
+                EC.presence_of_element_located((By.ID, 'next-test'))
+            )
+        super(FrontendTestCase, self).tearDown()
 
     def assertAreSameColor(self, first, second, msg=None):
         def get_color(element):
