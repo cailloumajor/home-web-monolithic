@@ -2,7 +2,15 @@
 
 from __future__ import unicode_literals
 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.color import Color
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver import Remote
 
 
 class JCanvasElementBaseException(Exception):
@@ -117,3 +125,62 @@ class JCanvasElement(object):
             instance.w,
             self._group_name
         )
+
+
+class FrontendTestCase(StaticLiveServerTestCase):
+
+    fixtures = ['test_frontend.json']
+
+    def setUp(self):
+        super(FrontendTestCase, self).setUp()
+        self.driver.root_uri = self.live_server_url
+        self.page = self.page_class(self.driver)
+        self.page.get()
+        wait = WebDriverWait(self.driver, 5)
+        el = wait.until(EC.visibility_of_element_located(self.ready_locator))
+        if type(self.driver) is Remote:
+            script = (
+                """
+                $('body').css('position', 'relative');
+                $('<div>', {{
+                    'id': 'test-id',
+                    text: '{test_info}',
+                    css: {{
+                        'background-color': 'yellow',
+                        'position': 'absolute',
+                        'top': '0', 'right': '0',
+                        'cursor': 'pointer',
+                    }},
+                    click: function() {{
+                        $(this).attr('id', 'next-test');
+                    }},
+                }}).appendTo('body');
+                """.format(test_info=self.id())
+            )
+            self.driver.execute_script(script)
+
+    def tearDown(self):
+        if type(self.driver) is Remote:
+            self.driver.execute_script(
+                ("$('#test-id').css('background-color', 'red')"
+                 ".append(' >> CLICK FOR NEXT TEST <<');")
+            )
+            wait = WebDriverWait(self.driver, 300)
+            el = wait.until(
+                EC.presence_of_element_located((By.ID, 'next-test'))
+            )
+        super(FrontendTestCase, self).tearDown()
+
+    def assertAreSameColor(self, first, second, msg=None):
+        def get_color(element):
+            if isinstance(element, WebElement):
+                color_rgba = element.value_of_css_property('background-color')
+            elif isinstance(element, JCanvasElementContainer):
+                color_rgba = element.color
+            else:
+                raise TypeError(
+                    "bad element type '{}'".format(type(element).__name__)
+                )
+            return Color.from_string(color_rgba)
+        colors = [get_color(element) for element in [first, second]]
+        self.assertEqual(*colors, msg=msg)
