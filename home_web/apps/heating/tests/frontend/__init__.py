@@ -12,6 +12,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver import Remote
 
+from .jsscripts import external_javascript as js
+
 
 class JCanvasElementBaseException(Exception):
 
@@ -50,25 +52,8 @@ class JCanvasElementContainer(object):
 
     def __getattr__(self, name):
         result = self._driver.execute_script(
-            """
-            return (function() {{
-                var group = $('#{canvas_id}').getLayerGroup('{group_name}');
-                if (group === undefined) {{
-                    return 'LayerGroupNotFound';
-                }}
-                var lst = [];
-                for (var i = 0 ; i < group.length ; i++) {{
-                    var prop = group[i]['{prop}'];
-                    if (prop === undefined) {{
-                        return 'PropertyNotFound';
-                    }}
-                    lst.push(prop);
-                }}
-                return lst;
-            }})();
-            """.format(canvas_id=self._canvas_id,
-                       group_name=self._group_name,
-                       prop=name)
+            js.get_script('get_layer_group_property'),
+            self._canvas_id, self._group_name, name
         )
         if (result == 'LayerGroupNotFound'):
             raise JCanvasElementNotFound(self)
@@ -84,15 +69,8 @@ class JCanvasElementContainer(object):
     @property
     def color(self):
         rgba = self._driver.execute_script(
-            """
-            var canvas = document.getElementById('{can_id}');
-            var ctx = canvas.getContext('2d');
-            return ctx.getImageData({x}, {y}, 1, 1).data;
-            """.format(
-                can_id = self._canvas_id,
-                x = self.x[0] + 5,
-                y = self.y[0] + 5,
-            )
+            js.get_script('get_color_on_canvas'),
+            self._canvas_id, self.x[0] + 5, self.y[0] + 5
         )
         alpha = rgba[3] / 255.0
         rgb = [int(round((comp / 255.0 * alpha + 1 - alpha) * 255.0))
@@ -139,31 +117,15 @@ class FrontendTestCase(StaticLiveServerTestCase):
         wait = WebDriverWait(self.driver, 5)
         el = wait.until(EC.visibility_of_element_located(self.ready_locator))
         if type(self.driver) is Remote:
-            script = (
-                """
-                $('body').css('position', 'relative');
-                $('<div>', {{
-                    'id': 'test-id',
-                    text: '{test_info}',
-                    css: {{
-                        'background-color': 'yellow',
-                        'position': 'absolute',
-                        'top': '0', 'right': '0',
-                        'cursor': 'pointer',
-                    }},
-                    click: function() {{
-                        $(this).attr('id', 'next-test');
-                    }},
-                }}).appendTo('body');
-                """.format(test_info=self.id())
+            self.driver.execute_script(
+                js.get_script('create_test_info_element'),
+                self.id()
             )
-            self.driver.execute_script(script)
 
     def tearDown(self):
         if type(self.driver) is Remote:
             self.driver.execute_script(
-                ("$('#test-id').css('background-color', 'red')"
-                 ".append(' >> CLICK FOR NEXT TEST <<');")
+                js.get_script('click_for_next_test')
             )
             wait = WebDriverWait(self.driver, 300)
             el = wait.until(
