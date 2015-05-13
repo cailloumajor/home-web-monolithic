@@ -71,3 +71,20 @@ class HomePageTest(FrontendTestCase):
         self.page.slot_del_form.submit()
         with self.assertRaises(JCanvasElementNotFound):
             c = self.page.slot2.count
+
+    def test_slot_adding(self):
+        self.page.tabbtn_z2.click()
+        self.page.slot5.click()
+        self.page.day_buttons[1].click()
+        self.page.day_buttons[4].click()
+        self.page.start_time.click()
+        self.page.hours[6].click()
+        self.page.minutes[1].click()
+        self.page.end_time.click()
+        self.page.hours[14].click()
+        self.page.minutes[3].click()
+        self.page.mode_buttons[2].click()
+        self.page.slot_form.submit()
+        self.assertEqual(self.page.slot6.width, [340, 340])
+        self.assertEqual(self.page.slot6.x, [290.5, 290.5])
+        self.assertEqual(self.page.slot6.y, [57.5, 147.5])
