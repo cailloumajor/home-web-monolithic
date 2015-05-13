@@ -28,24 +28,37 @@ return ctx.getImageData(x, y, 1, 1).data;
 
 // SCRIPT create_test_info_element
 var testInfo = arguments[0];
-$('body').css('position', 'relative');
-$('<div>', {
-    'id': 'test-id',
-    text: testInfo,
-    css: {
-        'background-color': 'yellow',
-        'position': 'absolute',
-        'top': '0', 'right': '0',
-        'cursor': 'pointer',
-    },
-    click: function() {
-        $(this).attr('id', 'next-test');
-    },
-}).appendTo('body');
+$('body').css('position', 'relative').append(
+    $('<div>', {
+        id: 'test-id',
+        text: testInfo,
+        css: {
+            'background-color': 'yellow',
+            'position': 'absolute',
+            'top': '0',
+            'left': '0',
+        },
+    }),
+    $('<button>', {
+        id: 'test-btn',
+        text: 'START TEST',
+        css: {
+            'position': 'absolute',
+            'top': '0',
+            'right': '0',
+        },
+        click: function() {
+            $(this).addClass('start-test').hide();
+            $('#test-id').css('background-color', 'lime');
+        },
+    })
+);
 // END SCRIPT
 
 // SCRIPT click_for_next_test
-$('#test-id').css('background-color', 'red').append(
-    ' >> CLICK FOR NEXT TEST <<'
-);
+$('#test-btn').click(function() {
+    $(this).addClass('next-test');
+    $('#test-id').remove();
+}).text('NEXT TEST').show();
+$('#test-id').css('background-color', 'white');
 // END SCRIPT

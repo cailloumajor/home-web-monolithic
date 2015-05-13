@@ -121,6 +121,10 @@ class FrontendTestCase(StaticLiveServerTestCase):
                 js.get_script('create_test_info_element'),
                 self.id()
             )
+            wait = WebDriverWait(self.driver, 300)
+            el = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'start-test'))
+            )
 
     def tearDown(self):
         if type(self.driver) is Remote:
@@ -129,7 +133,7 @@ class FrontendTestCase(StaticLiveServerTestCase):
             )
             wait = WebDriverWait(self.driver, 300)
             el = wait.until(
-                EC.presence_of_element_located((By.ID, 'next-test'))
+                EC.presence_of_element_located((By.CLASS_NAME, 'next-test'))
             )
         super(FrontendTestCase, self).tearDown()
 
