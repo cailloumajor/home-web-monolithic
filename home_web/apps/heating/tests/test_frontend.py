@@ -88,3 +88,14 @@ class HomePageTest(FrontendTestCase):
         self.assertEqual(self.page.slot6.width, [340, 340])
         self.assertEqual(self.page.slot6.x, [290.5, 290.5])
         self.assertEqual(self.page.slot6.y, [57.5, 147.5])
+
+    def test_slot_modification(self):
+        self.page.slot4.click()
+        self.page.day_buttons[4].click()
+        self.page.end_time.click()
+        self.page.hours[19].click()
+        self.page.minutes[0].click()
+        self.page.mode_buttons[0].click()
+        self.page.slot_form.submit()
+        self.assertEqual(self.page.slot4.width, [120, 120])
+        self.assertAreSameColor(self.page.slot4, self.page.legend2)
