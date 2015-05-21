@@ -35,7 +35,7 @@ def tearDownModule():
 class HomePageTest(FrontendTestCase):
 
     page_class = pages.HomePage
-    ready_locator = (By.CLASS_NAME, 'show-if-js')
+    ready_locator = (By.CLASS_NAME, 'show-if-js-done')
 
     def test_title(self):
         self.assertEqual(self.page.title, 'Gestion du chauffage')

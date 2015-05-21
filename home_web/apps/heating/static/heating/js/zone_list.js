@@ -35,5 +35,8 @@ require(
     $('.show-if-js').show({
         effect: 'fade',
         duration: 150,
+        complete: function() {
+            $(this).addClass('show-if-js-done');
+        },
     }).removeClass('hidden');
 });
