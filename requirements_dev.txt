@@ -6,5 +6,4 @@ nodeenv
 pyinotify
 coverage
 selenium
-xvfbwrapper
 page_objects

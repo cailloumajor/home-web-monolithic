@@ -7,19 +7,14 @@ import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from xvfbwrapper import Xvfb
-
 from .frontend import pages, FrontendTestCase, JCanvasElementNotFound
 
 
 def setUpModule():
-    global xserver
     global driver
-    xserver = Xvfb(width=1360, height=768, nolisten='tcp')
     remote_host = os.environ.get('REMOTE_WD')
     if remote_host is None:
-        xserver.start()
-        driver = webdriver.Firefox()
+        driver = webdriver.PhantomJS()
     else:
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -35,7 +30,6 @@ def setUpModule():
 
 def tearDownModule():
     driver.quit()
-    xserver.stop()
 
 
 class HomePageTest(FrontendTestCase):
