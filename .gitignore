@@ -1,2 +1,5 @@
 *.pyc
 fab_hosts
+.coverage
+htmlcov/
+ghostdriver.log

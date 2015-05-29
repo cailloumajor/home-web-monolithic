@@ -3,6 +3,7 @@
 import os
 import tempfile
 import shutil
+import errno
 
 from fabric.api import *
 from fabric.colors import green, yellow
@@ -18,6 +19,8 @@ WWW_EXCLUDE = (
     '/requirements_dev.txt',
     '/tmp/',
     'static/',
+    '.coveragerc',
+    'tests/',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
@@ -79,7 +82,7 @@ def _test_repo():
         abort("Abort at user request")
 
 def _django_tests():
-    local("python manage.py test")
+    local("python -Wall manage.py test")
 
 @task
 def collect_static():
@@ -117,6 +120,18 @@ def deploy_www():
         delete=True, exclude=WWW_EXCLUDE,
         extra_opts="--delete-excluded --filter=':- .gitignore'",
     )
+
+@task
+def coverage():
+    try:
+        shutil.rmtree('htmlcov')
+    except OSError as e:
+        if e.errno == errno.ENOENT:
+            pass
+        else:
+            raise
+    local("coverage run manage.py test -v2")
+    local("coverage html")
 
 @task(default=True)
 def deploy():

@@ -36,6 +36,7 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                     myPosition: 'center top',
                     atPosition: 'center bottom',
                     minutes: {interval: 15},
+                    showAnim: null,
                 });
                 break;
             case 'slot-del-form':

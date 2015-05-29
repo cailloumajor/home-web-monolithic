@@ -8,7 +8,7 @@ class YamJamConfig(object):
     def __nonzero__(self):
         return self._yjdict is not None
 
-    def getValue(self, keypath):
+    def getValue(self, keypath): # pragma: no cover
         _val = self._yjdict
         for k in keypath.split('.'):
             _val = _val[k]

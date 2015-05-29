@@ -3,8 +3,8 @@ define(['jquery', 'app/consts', 'app/form', 'jcanvas'],
 
     function timeToScale(strTime) {
         var timeArray = strTime.split(':');
-        var hours = parseInt(timeArray[0]);
-        var minutes = parseInt(timeArray[1]);
+        var hours = parseInt(timeArray[0], 10);
+        var minutes = parseInt(timeArray[1], 10);
         minutes = (minutes % 15 == 0) ? minutes : minutes + 1;
         if (minutes == 60) {
             hours += 1;
