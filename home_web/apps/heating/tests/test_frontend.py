@@ -48,10 +48,10 @@ class HomePageTest(FrontendTestCase):
         self.assertTrue(self.page.canvas_z2.is_displayed())
 
     def test_slot_color_against_legend(self):
-        self.assertAreSameColor(self.page.slot1, self.page.legend1)
-        self.assertAreSameColor(self.page.slot2, self.page.legend2)
-        self.assertAreSameColor(self.page.slot3, self.page.legend3)
-        self.assertAreSameColor(self.page.slot4, self.page.legend4)
+        self.assertEqual(self.page.slot1.color, self.page.legend1.color)
+        self.assertEqual(self.page.slot2.color, self.page.legend2.color)
+        self.assertEqual(self.page.slot3.color, self.page.legend3.color)
+        self.assertEqual(self.page.slot4.color, self.page.legend4.color)
 
     def test_slots_number_in_group(self):
         self.assertEqual(self.page.slot1.count, 7)
@@ -92,4 +92,4 @@ class HomePageTest(FrontendTestCase):
         self.page.mode_buttons[0].click()
         self.page.slot_form.submit()
         self.assertEqual(self.page.slot4.width, [120, 120])
-        self.assertAreSameColor(self.page.slot4, self.page.legend2)
+        self.assertEqual(self.page.slot4.color, self.page.legend2.color)

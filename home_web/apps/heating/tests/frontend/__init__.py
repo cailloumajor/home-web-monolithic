@@ -72,10 +72,10 @@ class JCanvasElementContainer(object):
             js.get_script('get_color_on_canvas'),
             self._canvas_id, self.x[0] + 5, self.y[0] + 5
         )
-        alpha = rgba[3] / 255.0
-        rgb = [int(round((comp / 255.0 * alpha + 1 - alpha) * 255.0))
+        alpha = rgba[3]
+        rgb = [int(round(255 - alpha + alpha * comp / 255.0))
                for comp in rgba[:3]]
-        return 'rgb({},{},{})'.format(*rgb)
+        return Color(*rgb)
 
     def click(self):
         if not self._canvas.is_displayed():
@@ -109,6 +109,10 @@ class FrontendTestCase(StaticLiveServerTestCase):
 
     fixtures = ['test_frontend.json']
 
+    def __init__(self, *args, **kwargs):
+        super(FrontendTestCase, self).__init__(*args, **kwargs)
+        self.addTypeEqualityFunc(Color, 'assertColorAlmostEqual')
+
     def setUp(self):
         super(FrontendTestCase, self).setUp()
         self.driver.root_uri = self.live_server_url
@@ -137,16 +141,21 @@ class FrontendTestCase(StaticLiveServerTestCase):
             )
         super(FrontendTestCase, self).tearDown()
 
-    def assertAreSameColor(self, first, second, msg=None):
-        def get_color(element):
-            if isinstance(element, WebElement):
-                color_rgba = element.value_of_css_property('background-color')
-            elif isinstance(element, JCanvasElementContainer):
-                color_rgba = element.color
-            else:
-                raise TypeError(
-                    "bad element type '{}'".format(type(element).__name__)
-                )
-            return Color.from_string(color_rgba)
-        colors = [get_color(element) for element in [first, second]]
-        self.assertEqual(*colors, msg=msg)
+    def assertColorAlmostEqual(self, color1, color2, msg=None):
+        standardMsg = "Colors differ: {} != {}".format(color1, color2)
+        msg = self._formatMessage(msg, standardMsg)
+        if color1 == color2:
+            return
+        if not round(abs(float(color1.alpha) - float(color2.alpha)), 2) == 0:
+            self.fail(msg)
+        for comp in ('red', 'green', 'blue'):
+            comp_color1 = getattr(color1, comp)
+            comp_color2 = getattr(color2, comp)
+            if abs(comp_color1 - comp_color2) > 2:
+                self.fail(msg)
+
+
+def get_webelement_color(self):
+    return Color.from_string(self.value_of_css_property('background-color'))
+
+WebElement.color = property(get_webelement_color)
