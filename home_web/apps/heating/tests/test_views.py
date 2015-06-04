@@ -3,13 +3,15 @@
 import datetime
 import json
 import random
+import locale
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
+from django.utils import timezone
 
-from ..models import Zone, Slot
+from ..models import Zone, Slot, Derogation
 
 def create_slot(zone, mode):
     st = datetime.time(random.randint(0, 23), random.randint(0, 59))
@@ -34,6 +36,26 @@ class ZoneViewsTest(TestCase):
         self.assertContains(response, hmtime(s1.end_time))
         self.assertContains(response, hmtime(s2.start_time))
         self.assertContains(response, hmtime(s2.end_time))
+
+    def test_derogation_in_zone_list_view(self):
+        locale.setlocale(locale.LC_ALL, '')
+        strdt = lambda dt: timezone.localtime(dt).strftime("%d %B %Y %H:%M")
+        z1 = Zone.objects.create(num=1)
+        sdt = datetime.datetime(2015, 3, 12, 8, 20)
+        edt = datetime.datetime(2015, 10, 2, 15, 43)
+        tz = timezone.get_default_timezone()
+        derog = Derogation.objects.create(
+            start_dt = timezone.make_aware(sdt, tz),
+            end_dt = timezone.make_aware(edt, tz),
+            mode = 'A'
+        )
+        derog.zones = [z1]
+        response = self.client.get(reverse('zone_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, strdt(derog.creation_dt))
+        self.assertContains(response, strdt(derog.start_dt))
+        self.assertContains(response, strdt(derog.end_dt))
+        self.assertContains(response, derog.get_mode_display())
 
 class SlotViewsTest(TestCase):
 
