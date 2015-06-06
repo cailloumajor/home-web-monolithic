@@ -24,6 +24,46 @@ class SlotModelTest(TestCase):
         )
         self.assertEqual(str(slot), "Z1 04:02:00-15:54:00 [L*M*V*D] Eco")
 
+    def test_is_active_queryset_method(self):
+        zone = Zone(num=1)
+        wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        now = timezone.localtime(timezone.now())
+        if now.time().hour < 1:
+            raise Exception("This test cannot be run between 00:00 and 01:00")
+        kwargs = {
+            'zone': zone, wdays[now.weekday()]: True, 'mode': 'E',
+            'start_time': (now - datetime.timedelta(hours=1)).time(),
+            'end_time': (now - datetime.timedelta(minutes=2)).time()
+        }
+        past_slot = Slot.objects.create(**kwargs)
+        kwargs = {
+            'zone': zone, wdays[now.weekday()]: True, 'mode': 'E',
+            'start_time': now.time(),
+            'end_time': (now + datetime.timedelta(minutes=2)).time()
+        }
+        active_slot = Slot.objects.create(**kwargs)
+        kwargs = {
+            'zone': zone, wdays[now.weekday()]: True, 'mode': 'E',
+            'start_time': (now + datetime.timedelta(minutes=2)).time(),
+            'end_time': (now - datetime.timedelta(hours=1)).time()
+        }
+        future_slot = Slot.objects.create(**kwargs)
+        kwargs = {
+            'zone': zone, wdays[(now.weekday() - 1) % 7]: True, 'mode': 'E',
+            'start_time': (now - datetime.timedelta(hours=1)).time(),
+            'end_time': (now - datetime.timedelta(minutes=2)).time()
+        }
+        yesterday_slot = Slot.objects.create(**kwargs)
+        kwargs = {
+            'zone': zone, wdays[(now.weekday() + 1) % 7]: True, 'mode': 'E',
+            'start_time': (now - datetime.timedelta(hours=1)).time(),
+            'end_time': (now - datetime.timedelta(minutes=2)).time()
+        }
+        tomorrow_slot = Slot.objects.create(**kwargs)
+        queryset = Slot.objects.is_active()
+        self.assertEqual(queryset.count(), 1)
+        self.assertEqual(queryset[0], active_slot)
+
 class DerogationModelTest(TestCase):
 
     def create_entries_for_active_tests(self):
