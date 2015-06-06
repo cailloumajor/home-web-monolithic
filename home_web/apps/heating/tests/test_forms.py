@@ -4,8 +4,9 @@ import datetime
 
 from django.test import  TestCase
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 
-from ..models import Zone, Slot
+from ..models import Zone, Slot, Derogation
 
 class SlotFormTest(TestCase):
 
@@ -125,3 +126,31 @@ class SlotDeleteTest(TestCase):
         self.assertRedirects(response, reverse('zone_list'))
         with self.assertRaises(Slot.DoesNotExist):
             Slot.objects.get(pk=s.pk)
+
+class DerogationFormTest(TestCase):
+
+    _url = reverse('new_derog')
+    _req_field_error = "Ce champ est obligatoire."
+
+    def test_required_fields(self):
+        response = self.client.post(self._url)
+        self.assertFormError(response, 'form', 'zones',
+                             self._req_field_error)
+        self.assertFormError(response, 'form', 'start_dt',
+                             self._req_field_error)
+        self.assertFormError(response, 'form', 'end_dt',
+                             self._req_field_error)
+        self.assertFormError(response, 'form', 'mode',
+                             self._req_field_error)
+
+    def test_form_valid_with_overriden_start_dt(self):
+        zone = Zone.objects.create(num=1)
+        start_dt = "06/06/2015 20:45"
+        end_dt = "21/11/2015 04:02"
+        mode = 'H'
+        response = self.client.post(self._url, {
+            'start_dt': start_dt, 'end_dt': end_dt,
+            'zones': zone.num, 'mode': mode
+        })
+        self.assertRedirects(response, reverse('zone_list'))
+        self.assertEqual(Derogation.objects.count(), 1)

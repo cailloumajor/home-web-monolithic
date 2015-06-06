@@ -51,3 +51,8 @@ class ModesAPIURLTests(URLTestMixin, TestCase):
     pattern_name = 'api_mode'
     expected_url = '/heating/api/modes/'
     expected_view = 'ModeAPI'
+
+class DerogationCreateURLTests(URLTestMixin, TestCase):
+    pattern_name = 'new_derog'
+    expected_url = '/heating/derogation/new/'
+    expected_view = 'DerogationCreate'
