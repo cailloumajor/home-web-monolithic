@@ -137,3 +137,37 @@ class AjaxSlotViewsTest(TestCase):
         self.assertIsInstance(response_dict, dict)
         self.assertEqual(response_dict.get('django_success'),
                          True)
+
+class ModeAPIViewTest(TestCase):
+
+    def test_mode_api_view(self):
+        zone = Zone(num=1)
+        wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        now = timezone.localtime(timezone.now())
+        if now.time().hour < 1:
+            raise Exception("This test cannot be run between 00:00 and 01:00")
+        z1 = Zone.objects.create(num=1)
+        z2 = Zone.objects.create(num=2)
+        z3 = Zone.objects.create(num=3)
+        kwargs = {
+            'zone': z2, wdays[now.weekday()]: True, 'mode': 'E',
+            'start_time': (now - datetime.timedelta(minutes=2)).time(),
+            'end_time': (now + datetime.timedelta(minutes=2)).time(),
+        }
+        slot_z2 = Slot.objects.create(**kwargs)
+        kwargs = {
+            'zone': z3, wdays[now.weekday()]: True, 'mode': 'H',
+            'start_time': (now - datetime.timedelta(minutes=2)).time(),
+            'end_time': (now + datetime.timedelta(minutes=2)).time(),
+        }
+        slot_z3 = Slot.objects.create(**kwargs)
+        derog_z3 = Derogation.objects.create(
+            start_dt = timezone.now() - datetime.timedelta(minutes=2),
+            end_dt = timezone.now() + datetime.timedelta(minutes=2),
+            mode = 'A'
+        )
+        derog_z3.zones = [z3]
+        response = self.client.get(reverse('api_mode'))
+        response_dict = json.loads(response.content.decode('utf-8'))
+        self.assertIsInstance(response_dict, dict)
+        self.assertEqual(response_dict, {'modes':{'1':'C','2':'E','3':'A'}})
