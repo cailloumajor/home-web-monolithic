@@ -13,6 +13,35 @@ class ZoneModelTest(TestCase):
         zone = Zone(num=1)
         self.assertEqual(str(zone), 'Z{}'.format(zone.num))
 
+    def test_is_active_queryset_method(self):
+        zone = Zone(num=1)
+        wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        now = timezone.localtime(timezone.now())
+        if now.time().hour < 1:
+            raise Exception("This test cannot be run between 00:00 and 01:00")
+        z1 = Zone.objects.create(num=1)
+        z2 = Zone.objects.create(num=2)
+        z3 = Zone.objects.create(num=3)
+        kwargs = {
+            'zone': z2, wdays[now.weekday()]: True, 'mode': 'E',
+            'start_time': (now - datetime.timedelta(minutes=2)).time(),
+            'end_time': (now + datetime.timedelta(minutes=2)).time(),
+        }
+        slot_z2 = Slot.objects.create(**kwargs)
+        kwargs = {
+            'zone': z3, wdays[now.weekday()]: True, 'mode': 'H',
+            'start_time': (now - datetime.timedelta(minutes=2)).time(),
+            'end_time': (now + datetime.timedelta(minutes=2)).time(),
+        }
+        slot_z3 = Slot.objects.create(**kwargs)
+        derog_z3 = Derogation.objects.create(
+            start_dt = timezone.now() - datetime.timedelta(minutes=2),
+            end_dt = timezone.now() + datetime.timedelta(minutes=2),
+            mode = 'A'
+        )
+        derog_z3.zones = [z3]
+        self.assertEqual(Zone.objects.get_modes(), {'1':'C','2':'E','3':'A'})
+
 class SlotModelTest(TestCase):
 
     def test_string_representation(self):
