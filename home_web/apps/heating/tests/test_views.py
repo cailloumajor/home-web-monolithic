@@ -171,3 +171,10 @@ class ModeAPIViewTest(TestCase):
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(response_dict, dict)
         self.assertEqual(response_dict, {'modes':{'1':'C','2':'E','3':'A'}})
+
+class DerogationViewsTest(TestCase):
+    _url = reverse('new_derog')
+
+    def test_derogation_create_view(self):
+        response = self.client.get(self._url)
+        self.assertEqual(response.status_code, 200)
