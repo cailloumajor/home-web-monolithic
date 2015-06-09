@@ -154,3 +154,18 @@ class DerogationFormTest(TestCase):
         })
         self.assertRedirects(response, reverse('zone_list'))
         self.assertEqual(Derogation.objects.count(), 1)
+
+class DerogationDeleteFormTest(TestCase):
+
+    def test_slot_delete_form_valid(self):
+        tz = timezone.get_current_timezone()
+        start = timezone.make_aware(datetime.datetime(2015, 6, 9, 6, 30), tz)
+        end = timezone.make_aware(datetime.datetime(2015, 6, 9, 18, 45), tz)
+        derog = Derogation.objects.create(start_dt=start, end_dt=end,
+                                          mode = 'E')
+        self.assertEqual(Derogation.objects.all().get(), derog)
+        response = self.client.post(reverse('del_derog',
+                                    kwargs={'pk':derog.pk}))
+        self.assertRedirects(response, reverse('zone_list'))
+        with self.assertRaises(Derogation.DoesNotExist):
+            Derogation.objects.get(pk=derog.pk)
