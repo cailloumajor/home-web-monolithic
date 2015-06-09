@@ -181,3 +181,12 @@ class DerogationViewsTest(TestCase):
     def test_derogation_list_view(self):
         response = self.client.get(reverse('derog_list'))
         self.assertEqual(response.status_code, 200)
+
+    def test_derogation_delete_view(self):
+        tz = timezone.get_current_timezone()
+        start = timezone.make_aware(datetime.datetime(2015, 6, 9, 6, 50), tz)
+        end = timezone.make_aware(datetime.datetime(2015, 6, 9, 18, 45), tz)
+        derog = Derogation.objects.create(start_dt=start, end_dt=end, mode='H')
+        response = self.client.get(reverse('del_derog', kwargs={'pk':derog.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, str(derog).replace('>', '&gt;'))
