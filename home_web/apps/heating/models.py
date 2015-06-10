@@ -16,7 +16,7 @@ class Zone(models.Model):
     class Meta:
         ordering = ['num']
     
-    def __unicode__(self):
+    def __str__(self):
         return 'Z%s' % (self.num,)
 
 class Slot(models.Model):
@@ -42,7 +42,7 @@ class Slot(models.Model):
         default=None
     )
 
-    def __unicode__(self):
+    def __str__(self):
         days_fields_list = [
             self.mon, self.tue, self.wed, self.thu,
             self.fri, self.sat, self.sun
