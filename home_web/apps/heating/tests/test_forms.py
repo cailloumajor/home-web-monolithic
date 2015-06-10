@@ -24,7 +24,7 @@ class SlotFormTest(TestCase):
         Slot.objects.create(
             zone=z, mon=True, mode='E',
             start_time=datetime.time(10),
-            end_time=datetime.time(13,59)
+            end_time=datetime.time(13, 59)
         )
 
     def test_required_fields(self):

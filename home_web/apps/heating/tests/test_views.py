@@ -12,8 +12,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from ..models import Zone, Slot
 
 def create_slot(zone, mode):
-    st = datetime.time(random.randint(0,23), random.randint(0,59))
-    et = datetime.time(random.randint(0,23), random.randint(0,59))
+    st = datetime.time(random.randint(0, 23), random.randint(0, 59))
+    et = datetime.time(random.randint(0, 23), random.randint(0, 59))
     return Slot.objects.create(zone=zone, mode=mode, start_time=st, end_time=et)
 
 class ZoneViewsTest(TestCase):
