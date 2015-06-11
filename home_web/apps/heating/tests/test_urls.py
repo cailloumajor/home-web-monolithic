@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
 from django.test import TestCase
 from django.core.urlresolvers import reverse, resolve, NoReverseMatch
 
@@ -23,7 +21,7 @@ class URLTestMixin(object):
                 reverse(self.pattern_name, kwargs={'test':'1'})
 
     def test_url_view_resolve(self):
-        viewname = resolve(self.expected_url).func.func_name
+        viewname = resolve(self.expected_url).func.__name__
         self.assertEqual(viewname, self.expected_view)
 
 class ZoneListURLTests(URLTestMixin, TestCase):

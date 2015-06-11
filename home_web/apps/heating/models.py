@@ -16,8 +16,8 @@ class Zone(models.Model):
     class Meta:
         ordering = ['num']
     
-    def __unicode__(self):
-        return u'Z%s' % (self.num,)
+    def __str__(self):
+        return 'Z%s' % (self.num,)
 
 class Slot(models.Model):
     MODE_CHOICES = (
@@ -42,13 +42,13 @@ class Slot(models.Model):
         default=None
     )
 
-    def __unicode__(self):
+    def __str__(self):
         days_fields_list = [
             self.mon, self.tue, self.wed, self.thu,
             self.fri, self.sat, self.sun
         ]
         days_string = "".join([d if b else "*"
                                for (d, b) in zip('LMMJVSD', days_fields_list)])
-        return u'%s %s-%s [%s] %s' % (self.zone, self.start_time,
+        return '%s %s-%s [%s] %s' % (self.zone, self.start_time,
                                       self.end_time, days_string,
                                       self.get_mode_display())

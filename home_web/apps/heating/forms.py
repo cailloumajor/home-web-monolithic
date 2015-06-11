@@ -8,6 +8,7 @@ from django.forms import widgets
 from django import forms
 
 from .models import Slot
+from functools import reduce
 
 def validate_quarter_hour(value):
     if value.minute % 15 != 0:

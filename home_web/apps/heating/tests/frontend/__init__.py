@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from selenium.webdriver.common.by import By

@@ -45,7 +45,7 @@ class TemporaryStaticDir(object):
 
     def __init__(self):
         self.root_dir = tempfile.mkdtemp()
-        os.chmod(self.root_dir, 0755)
+        os.chmod(self.root_dir, 0o755)
         shutil.copytree(self.TOOLS_DIR, self.tools_dir)
         for sd in self.SUBDIRS:
             os.mkdir(os.path.join(self.root_dir, sd))

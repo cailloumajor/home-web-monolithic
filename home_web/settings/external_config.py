@@ -5,7 +5,7 @@ class YamJamConfig(object):
         self._project = __package__.split('.')[0]
         self._yjdict = yamjam('~/.yamjam/config.yaml').get(self._project)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self._yjdict is not None
 
     def getValue(self, keypath): # pragma: no cover
