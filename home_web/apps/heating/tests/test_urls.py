@@ -46,3 +46,8 @@ class SlotDeleteURLTests(URLTestMixin, TestCase):
     pattern_kwargs = {'pk': '4'}
     expected_url = '/heating/slot/4/delete/'
     expected_view = 'SlotDelete'
+
+class ModesAPIURLTests(URLTestMixin, TestCase):
+    pattern_name = 'api_mode'
+    expected_url = '/heating/api/modes/'
+    expected_view = 'ModeAPI'
