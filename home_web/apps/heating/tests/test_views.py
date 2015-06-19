@@ -173,8 +173,11 @@ class ModeAPIViewTest(TestCase):
         self.assertEqual(response_dict, {'modes':{'1':'C','2':'E','3':'A'}})
 
 class DerogationViewsTest(TestCase):
-    _url = reverse('new_derog')
 
     def test_derogation_create_view(self):
-        response = self.client.get(self._url)
+        response = self.client.get(reverse('new_derog'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_derogation_list_view(self):
+        response = self.client.get(reverse('derog_list'))
         self.assertEqual(response.status_code, 200)

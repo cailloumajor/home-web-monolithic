@@ -56,3 +56,8 @@ class DerogationCreateURLTests(URLTestMixin, TestCase):
     pattern_name = 'new_derog'
     expected_url = '/heating/derogation/new/'
     expected_view = 'DerogationCreate'
+
+class DerogationListURLTests(URLTestMixin, TestCase):
+    pattern_name = 'derog_list'
+    expected_url = '/heating/derogation/'
+    expected_view = 'DerogationList'
