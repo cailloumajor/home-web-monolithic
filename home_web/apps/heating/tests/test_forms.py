@@ -129,10 +129,13 @@ class SlotDeleteTest(TestCase):
         with self.assertRaises(Slot.DoesNotExist):
             Slot.objects.get(pk=s.pk)
 
+
 class DerogationFormTest(TestCase):
 
     _url = reverse('new_derog')
     _req_field_error = "Ce champ est obligatoire."
+    _quar_hour_error = ("Seules les valeurs 00, 15, 30 et 45 "
+                        "sont autorisées pour les minutes")
 
     def test_required_fields(self):
         response = self.client.post(self._url)
@@ -148,7 +151,7 @@ class DerogationFormTest(TestCase):
     def test_form_valid_with_overriden_start_dt(self):
         zone = Zone.objects.create(num=1)
         start_dt = "06/06/2015 20:45"
-        end_dt = "21/11/2015 04:02"
+        end_dt = "21/11/2015 04:15"
         mode = 'H'
         response = self.client.post(self._url, {
             'start_dt': start_dt, 'end_dt': end_dt,
@@ -160,13 +163,17 @@ class DerogationFormTest(TestCase):
     def test_form_valid_with_initial_start_dt(self):
         zone = Zone.objects.create(num=1)
         start_initial = start_dt = "29/06/2015 21:04"
-        end_dt = "29/06/2015 22:02"
+        end_dt = "29/06/2015 22:00"
         response = self.client.post(self._url, {
             'start_initial': start_initial, 'start_dt': start_dt,
             'end_dt': end_dt, 'zones': zone.num, 'mode': 'E'
         })
         self.assertRedirects(response, reverse('zone_list'))
         self.assertEqual(Derogation.objects.count(), 1)
+
+    def test_end_datetime_quarter_hour(self):
+        response = self.client.post(self._url, {'end_dt': "30/06/2015 21:03"})
+        self.assertFormError(response, 'form', 'end_dt', self._quar_hour_error)
 
 
 class DerogationDeleteFormTest(TestCase):

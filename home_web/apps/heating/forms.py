@@ -116,3 +116,4 @@ class DerogationForm(forms.ModelForm):
         super(DerogationForm, self).__init__(*args, **kwargs)
         self.fields['start_dt'].input_formats = ["%d/%m/%Y %H:%M"]
         self.fields['end_dt'].input_formats = ["%d/%m/%Y %H:%M"]
+        self.fields['end_dt'].validators += [validate_quarter_hour]
