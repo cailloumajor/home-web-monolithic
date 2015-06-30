@@ -117,3 +117,14 @@ class DerogationForm(forms.ModelForm):
         self.fields['start_dt'].input_formats = ["%d/%m/%Y %H:%M"]
         self.fields['end_dt'].input_formats = ["%d/%m/%Y %H:%M"]
         self.fields['end_dt'].validators += [validate_quarter_hour]
+
+    def clean(self):
+        cl_data = super(DerogationForm, self).clean()
+        start_initial = cl_data.get('start_initial')
+        start_dt = cl_data.get('start_dt')
+        if start_initial and start_dt:
+            if not start_initial == start_dt:
+                try:
+                    validate_quarter_hour(start_dt)
+                except forms.ValidationError as val_err:
+                    self.add_error('start_dt', val_err)

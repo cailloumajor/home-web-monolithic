@@ -150,12 +150,13 @@ class DerogationFormTest(TestCase):
 
     def test_form_valid_with_overriden_start_dt(self):
         zone = Zone.objects.create(num=1)
+        start_initial = "06/06/2015 20:40"
         start_dt = "06/06/2015 20:45"
         end_dt = "21/11/2015 04:15"
         mode = 'H'
         response = self.client.post(self._url, {
-            'start_dt': start_dt, 'end_dt': end_dt,
-            'zones': zone.num, 'mode': mode
+            'start_initial': start_initial, 'start_dt': start_dt,
+            'end_dt': end_dt, 'zones': zone.num, 'mode': mode
         })
         self.assertRedirects(response, reverse('zone_list'))
         self.assertEqual(Derogation.objects.count(), 1)
@@ -174,6 +175,12 @@ class DerogationFormTest(TestCase):
     def test_end_datetime_quarter_hour(self):
         response = self.client.post(self._url, {'end_dt': "30/06/2015 21:03"})
         self.assertFormError(response, 'form', 'end_dt', self._quar_hour_error)
+
+    def test_start_datetime_quarter_hour(self):
+        response = self.client.post(self._url, {
+            'start_initial': "30/06/2015 21:20", 'start_dt': "30/06/2015 21:22"
+        })
+        self.assertFormError(response, 'form', 'start_dt', self._quar_hour_error)
 
 
 class DerogationDeleteFormTest(TestCase):
