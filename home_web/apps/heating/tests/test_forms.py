@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from ..models import Zone, Slot, Derogation
 
+
 class SlotFormTest(TestCase):
 
     longMessage = True
@@ -113,6 +114,7 @@ class SlotFormTest(TestCase):
             self.assertRedirects(response, reverse('zone_list'))
         self.assertEqual(Slot.objects.filter(zone__num=1).count(), 8)
 
+
 class SlotDeleteTest(TestCase):
 
     def test_slot_delete_form_valid(self):
@@ -154,6 +156,18 @@ class DerogationFormTest(TestCase):
         })
         self.assertRedirects(response, reverse('zone_list'))
         self.assertEqual(Derogation.objects.count(), 1)
+
+    def test_form_valid_with_initial_start_dt(self):
+        zone = Zone.objects.create(num=1)
+        start_initial = start_dt = "29/06/2015 21:04"
+        end_dt = "29/06/2015 22:02"
+        response = self.client.post(self._url, {
+            'start_initial': start_initial, 'start_dt': start_dt,
+            'end_dt': end_dt, 'zones': zone.num, 'mode': 'E'
+        })
+        self.assertRedirects(response, reverse('zone_list'))
+        self.assertEqual(Derogation.objects.count(), 1)
+
 
 class DerogationDeleteFormTest(TestCase):
 

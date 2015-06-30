@@ -81,6 +81,7 @@ class DerogationCreate(AjaxResponseMixin, CreateView):
         initial = super(DerogationCreate, self).get_initial()
         initial = initial.copy()
         initial['start_dt'] = timezone.now()
+        initial['start_initial'] = initial['start_dt']
         return initial
 
 class DerogationDelete(AjaxResponseMixin, DeleteView):

@@ -3,6 +3,7 @@
 {% block content %}
   <form action='{{ request.path }}' class="heating-form" id="derogation-form" method="post">
     {% csrf_token %}
+    {{ form.start_initial }}
     {{ form.non_field_errors }}
     <div class="line" id="zones">
       {{ form.zones.label_tag }}{{ form.zones }}{{ form.zones.errors }}

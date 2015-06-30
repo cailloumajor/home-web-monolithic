@@ -2,13 +2,13 @@
 
 import datetime
 import operator
+from functools import reduce
 
+from django import forms
 from django.db.models import Q
 from django.forms import widgets
-from django import forms
 
 from .models import Slot, Derogation
-from functools import reduce
 
 def validate_quarter_hour(value):
     if value.minute % 15 != 0:
@@ -92,10 +92,19 @@ class SlotForm(forms.ModelForm):
 
         return cl_data
 
+class HiddenDateTimeWidget(widgets.DateTimeInput):
+    input_type = 'hidden'
+
 class DerogationForm(forms.ModelForm):
+
+    start_initial = forms.DateTimeField(
+        widget = HiddenDateTimeWidget(format="%d/%m/%Y %H:%M"),
+        required = False
+    )
+
     class Meta():
         model = Derogation
-        fields = ['zones', 'start_dt', 'end_dt', 'mode']
+        fields = ['start_initial', 'zones', 'start_dt', 'end_dt', 'mode']
         widgets = {
             'start_dt': widgets.DateTimeInput(format="%d/%m/%Y %H:%M"),
             'end_dt': widgets.DateTimeInput(format="%d/%m/%Y %H:%M"),
