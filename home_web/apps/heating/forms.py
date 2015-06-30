@@ -7,6 +7,7 @@ from functools import reduce
 from django import forms
 from django.db.models import Q
 from django.forms import widgets
+from django.utils import timezone
 
 from .models import Slot, Derogation
 
@@ -128,3 +129,7 @@ class DerogationForm(forms.ModelForm):
                     validate_quarter_hour(start_dt)
                 except forms.ValidationError as val_err:
                     self.add_error('start_dt', val_err)
+                if start_dt < timezone.now():
+                    self.add_error('start_dt', forms.ValidationError(
+                        "La prise d'effet ne doit pas se situer dans le passé"
+                    ))

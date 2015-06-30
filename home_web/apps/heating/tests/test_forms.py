@@ -136,6 +136,8 @@ class DerogationFormTest(TestCase):
     _req_field_error = "Ce champ est obligatoire."
     _quar_hour_error = ("Seules les valeurs 00, 15, 30 et 45 "
                         "sont autorisées pour les minutes")
+    _start_dt_past_error = (
+        "La prise d'effet ne doit pas se situer dans le passé")
 
     def test_required_fields(self):
         response = self.client.post(self._url)
@@ -151,7 +153,9 @@ class DerogationFormTest(TestCase):
     def test_form_valid_with_overriden_start_dt(self):
         zone = Zone.objects.create(num=1)
         start_initial = "06/06/2015 20:40"
-        start_dt = "06/06/2015 20:45"
+        start_dt = timezone.localtime(timezone.now())
+        start_dt += datetime.timedelta(hours=2)
+        start_dt = start_dt.replace(minute=30).strftime("%d/%m/%Y %H:%M")
         end_dt = "21/11/2015 04:15"
         mode = 'H'
         response = self.client.post(self._url, {
@@ -181,6 +185,15 @@ class DerogationFormTest(TestCase):
             'start_initial': "30/06/2015 21:20", 'start_dt': "30/06/2015 21:22"
         })
         self.assertFormError(response, 'form', 'start_dt', self._quar_hour_error)
+
+    def test_start_datetime_in_past(self):
+        dt = timezone.localtime(timezone.now()) - datetime.timedelta(hours=2)
+        dt = dt.replace(minute=15).strftime("%d/%m/%Y %H:%M")
+        response = self.client.post(self._url, {
+            'start_initial': "30/06/2015 21:50", 'start_dt': dt
+        })
+        self.assertFormError(
+            response, 'form', 'start_dt', self._start_dt_past_error)
 
 
 class DerogationDeleteFormTest(TestCase):
