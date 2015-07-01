@@ -123,6 +123,7 @@ class DerogationForm(forms.ModelForm):
         cl_data = super(DerogationForm, self).clean()
         start_initial = cl_data.get('start_initial')
         start_dt = cl_data.get('start_dt')
+        end_dt = cl_data.get('end_dt')
         if start_initial and start_dt:
             if not start_initial == start_dt:
                 try:
@@ -133,3 +134,8 @@ class DerogationForm(forms.ModelForm):
                     self.add_error('start_dt', forms.ValidationError(
                         "La prise d'effet ne doit pas se situer dans le passé"
                     ))
+        if start_dt and end_dt:
+            if end_dt < start_dt:
+                self.add_error('end_dt', forms.ValidationError(
+                    "La fin d'effet doit être ultérieure à la prise d'effet"
+                ))

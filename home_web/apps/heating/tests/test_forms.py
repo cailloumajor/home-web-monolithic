@@ -138,6 +138,9 @@ class DerogationFormTest(TestCase):
                         "sont autorisées pour les minutes")
     _start_dt_past_error = (
         "La prise d'effet ne doit pas se situer dans le passé")
+    _end_before_start_error = (
+        "La fin d'effet doit être ultérieure à la prise d'effet"
+    )
 
     def test_required_fields(self):
         response = self.client.post(self._url)
@@ -156,7 +159,7 @@ class DerogationFormTest(TestCase):
         start_dt = timezone.localtime(timezone.now())
         start_dt += datetime.timedelta(hours=2)
         start_dt = start_dt.replace(minute=30).strftime("%d/%m/%Y %H:%M")
-        end_dt = "21/11/2015 04:15"
+        end_dt = start_dt.replace(':30', ':45')
         mode = 'H'
         response = self.client.post(self._url, {
             'start_initial': start_initial, 'start_dt': start_dt,
@@ -194,6 +197,19 @@ class DerogationFormTest(TestCase):
         })
         self.assertFormError(
             response, 'form', 'start_dt', self._start_dt_past_error)
+
+    def test_end_datetime_before_start_datetime(self):
+        start = timezone.localtime(timezone.now()) + datetime.timedelta(hours=3)
+        start = start.replace(minute=45)
+        end = start - datetime.timedelta(hours=1)
+        start = start.strftime("%d/%m/%Y %H:%M")
+        end = end.strftime("%d/%m/%Y %H:%M")
+        response = self.client.post(self._url, {
+            'start_initial': "01/07/2015 20:29", 'start_dt': start,
+            'end_dt': end
+        })
+        self.assertFormError(
+            response, 'form', 'end_dt', self._end_before_start_error)
 
 
 class DerogationDeleteFormTest(TestCase):
