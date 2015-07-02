@@ -11,7 +11,7 @@
   </tr></thead>
   <tbody>
     {% for d in derogation_list %}
-      <tr>
+      <tr class='{{ d.outdated|yesno:"outdated-derog," }}'>
         <td><span class="derog-check">
             {% if d.active %}X{% endif %}
         </span></td>

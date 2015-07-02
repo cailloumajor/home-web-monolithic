@@ -126,3 +126,7 @@ label[for="del-btn"].ui-state-active {
 .derog-check {
     margin: 0 auto;
 }
+
+.outdated-derog {
+    opacity: 0.4;
+}
