@@ -84,3 +84,6 @@ class Derogation(ModeBase):
 
     def active(self):
         return self.__class__.objects.filter(pk=self.pk).is_active().exists()
+
+    def outdated(self):
+        return self.__class__.objects.filter(pk=self.pk).is_outdated().exists()

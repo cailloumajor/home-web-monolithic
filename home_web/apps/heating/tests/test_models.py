@@ -143,3 +143,9 @@ class DerogationModelTest(TestCase):
         queryset = Derogation.objects.is_outdated()
         self.assertEqual(queryset.count(), 1)
         self.assertEqual(queryset[0], self.past_derog)
+
+    def test_outdated_model_method(self):
+        self.create_entries_for_active_tests()
+        self.assertTrue(self.past_derog.outdated())
+        self.assertFalse(self.active_derog.outdated())
+        self.assertFalse(self.future_derog.outdated())
