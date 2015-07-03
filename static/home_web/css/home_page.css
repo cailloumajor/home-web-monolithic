@@ -93,10 +93,6 @@ nav a {
                 no-repeat;
 }
 
-body.loading {
-    overflow: hidden;
-}
-
 body.loading #spinner {
     display: block;
 }
