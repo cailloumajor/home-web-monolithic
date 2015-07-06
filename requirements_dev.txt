@@ -6,3 +6,4 @@ pyinotify
 coverage
 selenium
 page_objects
+django-dynamic-fixture
