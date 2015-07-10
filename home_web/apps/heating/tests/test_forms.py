@@ -6,6 +6,8 @@ from django.test import  TestCase
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 
+from django_dynamic_fixture import G, F
+
 from ..models import Zone, Slot, Derogation
 
 
@@ -22,12 +24,8 @@ class SlotFormTest(TestCase):
                         "sont autorisées pour les minutes")
 
     def setUp(self):
-        z = Zone.objects.create(num=1, desc="Test zone")
-        Slot.objects.create(
-            zone=z, mon=True, mode='E',
-            start_time=datetime.time(10),
-            end_time=datetime.time(13, 59)
-        )
+        G(Slot, zone=F(num=1), mon=True, mode='E',
+          start_time=datetime.time(10), end_time=datetime.time(13, 59))
 
     def test_required_fields(self):
         response = self.client.post(self._url)
@@ -118,11 +116,7 @@ class SlotFormTest(TestCase):
 class SlotDeleteTest(TestCase):
 
     def test_slot_delete_form_valid(self):
-        z = Zone.objects.create(num=1, desc="Test zone")
-        s = Slot.objects.create(
-            zone=z, mon=True, mode='E',
-            start_time=datetime.time(4), end_time=datetime.time(6),
-        )
+        s = G(Slot, mode='E')
         self.assertEqual(Slot.objects.all().get(), s)
         response = self.client.post(reverse('del_slot', kwargs={'pk':s.pk}))
         self.assertRedirects(response, reverse('zone_list'))
@@ -154,7 +148,7 @@ class DerogationFormTest(TestCase):
                              self._req_field_error)
 
     def test_form_valid_with_overriden_start_dt(self):
-        zone = Zone.objects.create(num=1)
+        zone = G(Zone)
         start_initial = "06/06/2015 20:40"
         start_dt = timezone.localtime(timezone.now())
         start_dt += datetime.timedelta(hours=2)
@@ -169,7 +163,7 @@ class DerogationFormTest(TestCase):
         self.assertEqual(Derogation.objects.count(), 1)
 
     def test_form_valid_with_initial_start_dt(self):
-        zone = Zone.objects.create(num=1)
+        zone = G(Zone)
         start_initial = start_dt = "29/06/2015 21:04"
         end_dt = "29/06/2015 22:00"
         response = self.client.post(self._url, {
@@ -215,11 +209,7 @@ class DerogationFormTest(TestCase):
 class DerogationDeleteFormTest(TestCase):
 
     def test_slot_delete_form_valid(self):
-        tz = timezone.get_current_timezone()
-        start = timezone.make_aware(datetime.datetime(2015, 6, 9, 6, 30), tz)
-        end = timezone.make_aware(datetime.datetime(2015, 6, 9, 18, 45), tz)
-        derog = Derogation.objects.create(start_dt=start, end_dt=end,
-                                          mode = 'E')
+        derog = G(Derogation, mode='E')
         self.assertEqual(Derogation.objects.all().get(), derog)
         response = self.client.post(reverse('del_derog',
                                     kwargs={'pk':derog.pk}))
