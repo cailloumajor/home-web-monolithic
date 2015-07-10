@@ -11,27 +11,22 @@ from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 
-from ..models import Zone, Slot, Derogation
+from django_dynamic_fixture import G, F
 
-def create_slot(zone, mode):
-    st = datetime.time(random.randint(0, 23), random.randint(0, 59))
-    et = datetime.time(random.randint(0, 23), random.randint(0, 59))
-    return Slot.objects.create(zone=zone, mode=mode, start_time=st, end_time=et)
+from ..models import Zone, Slot, Derogation
 
 class ZoneViewsTest(TestCase):
 
     def test_zone_list_view(self):
         hmtime = lambda t: t.strftime('%H:%M')
-        z1 = Zone.objects.create(num=1, desc="Zone test 1")
-        z2 = Zone.objects.create(num=2, desc="Zone test 2")
-        s1 = create_slot(z1, 'H')
-        s2 = create_slot(z2, 'A')
+        s1 = G(Slot, mode='E', zone=F(num=1))
+        s2 = G(Slot, mode='H', zone=F(num=2))
         response = self.client.get(reverse('zone_list'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Zone {}".format(z1.num))
-        self.assertContains(response, "Zone {}".format(z2.num))
-        self.assertContains(response, z1.desc)
-        self.assertContains(response, z2.desc)
+        self.assertContains(response, "Zone {}".format(s1.zone.num))
+        self.assertContains(response, "Zone {}".format(s2.zone.num))
+        self.assertContains(response, s1.zone.desc)
+        self.assertContains(response, s2.zone.desc)
         self.assertContains(response, hmtime(s1.start_time))
         self.assertContains(response, hmtime(s1.end_time))
         self.assertContains(response, hmtime(s2.start_time))
@@ -40,16 +35,7 @@ class ZoneViewsTest(TestCase):
     def test_derogation_in_zone_list_view(self):
         locale.setlocale(locale.LC_ALL, '')
         strdt = lambda dt: timezone.localtime(dt).strftime("%d %B %Y %H:%M")
-        z1 = Zone.objects.create(num=1)
-        sdt = datetime.datetime(2015, 3, 12, 8, 20)
-        edt = datetime.datetime(2015, 10, 2, 15, 43)
-        tz = timezone.get_default_timezone()
-        derog = Derogation.objects.create(
-            start_dt = timezone.make_aware(sdt, tz),
-            end_dt = timezone.make_aware(edt, tz),
-            mode = 'A'
-        )
-        derog.zones = [z1]
+        derog = G(Derogation, mode = 'A')
         response = self.client.get(reverse('zone_list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, strdt(derog.creation_dt))
@@ -60,8 +46,8 @@ class ZoneViewsTest(TestCase):
 class SlotViewsTest(TestCase):
 
     def setUp(self):
-        self._zone = Zone.objects.create(num=1, desc="Zone test")
-        self._slot = create_slot(self._zone, 'E')
+        self._zone = G(Zone)
+        self._slot = G(Slot, zone=self._zone, mode='A')
             
     def test_slot_create_view(self):
         response = self.client.get(
@@ -94,7 +80,7 @@ class AjaxSlotViewsTest(TestCase):
         self.assertEqual(response_dict, response_non_ajax.context['form'].errors)
 
     def test_ajax_slot_create_view_form_valid(self):
-        z = Zone.objects.create(num=1, desc="Test zone")
+        z = G(Zone)
         response = self.client.post(
             reverse('new_slot', kwargs={'zone':z.num}),
             {
@@ -125,11 +111,7 @@ class AjaxSlotViewsTest(TestCase):
                          reverse('del_slot', kwargs={'pk':created_slot.pk}))
 
     def test_ajax_slot_delete_view(self):
-        z = Zone.objects.create(num=1, desc="Test zone")
-        s = Slot.objects.create(
-            zone=z, mon=True, mode='E',
-            start_time=datetime.time(4), end_time=datetime.time(6),
-        )
+        s = G(Slot, mon=True, mode='E')
         self.assertEqual(Slot.objects.all().get(), s)
         response = self.client.post(reverse('del_slot', kwargs={'pk':s.pk}),
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -141,32 +123,26 @@ class AjaxSlotViewsTest(TestCase):
 class ModeAPIViewTest(TestCase):
 
     def test_mode_api_view(self):
-        zone = Zone(num=1)
         wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
         now = timezone.localtime(timezone.now())
-        if now.time().hour < 1:
-            raise Exception("This test cannot be run between 00:00 and 01:00")
-        z1 = Zone.objects.create(num=1)
-        z2 = Zone.objects.create(num=2)
-        z3 = Zone.objects.create(num=3)
+        z1 = G(Zone, num=1)
         kwargs = {
-            'zone': z2, wdays[now.weekday()]: True, 'mode': 'E',
+            'zone': F(num=2), wdays[now.weekday()]: True, 'mode': 'E',
             'start_time': (now - datetime.timedelta(minutes=2)).time(),
             'end_time': (now + datetime.timedelta(minutes=2)).time(),
         }
-        slot_z2 = Slot.objects.create(**kwargs)
+        slot_z2 = G(Slot, **kwargs)
         kwargs = {
-            'zone': z3, wdays[now.weekday()]: True, 'mode': 'H',
+            'zone': F(num=3), wdays[now.weekday()]: True, 'mode': 'H',
             'start_time': (now - datetime.timedelta(minutes=2)).time(),
             'end_time': (now + datetime.timedelta(minutes=2)).time(),
         }
-        slot_z3 = Slot.objects.create(**kwargs)
-        derog_z3 = Derogation.objects.create(
+        slot_z3 = G(Slot, **kwargs)
+        derog_z3 = G(
+            Derogation, mode = 'A', zones=[F(num=3)],
             start_dt = timezone.now() - datetime.timedelta(minutes=2),
-            end_dt = timezone.now() + datetime.timedelta(minutes=2),
-            mode = 'A'
+            end_dt = timezone.now() + datetime.timedelta(minutes=2)
         )
-        derog_z3.zones = [z3]
         response = self.client.get(reverse('api_mode'))
         response_dict = json.loads(response.content.decode('utf-8'))
         self.assertIsInstance(response_dict, dict)
@@ -183,10 +159,7 @@ class DerogationViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_derogation_delete_view(self):
-        tz = timezone.get_current_timezone()
-        start = timezone.make_aware(datetime.datetime(2015, 6, 9, 6, 50), tz)
-        end = timezone.make_aware(datetime.datetime(2015, 6, 9, 18, 45), tz)
-        derog = Derogation.objects.create(start_dt=start, end_dt=end, mode='H')
+        derog = G(Derogation, mode='E')
         response = self.client.get(reverse('del_derog', kwargs={'pk':derog.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, str(derog).replace('>', '&gt;'))
