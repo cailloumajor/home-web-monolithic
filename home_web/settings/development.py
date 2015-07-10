@@ -86,3 +86,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
+# Django Dynamic Fixtures configuration options
+
+DDF_DEFAULT_DATA_FIXTURE = 'global_sequential'
+DDF_VALIDATE_ARGS = True
