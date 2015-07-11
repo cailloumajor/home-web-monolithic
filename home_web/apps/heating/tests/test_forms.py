@@ -135,6 +135,17 @@ class DerogationFormTest(TestCase):
     _end_before_start_error = (
         "La fin d'effet doit être ultérieure à la prise d'effet"
     )
+    _conflict_error = (
+        "Les horaires sont en conflit avec une dérogation existante")
+
+    def setUp(self):
+        start = (
+            (timezone.now() + datetime.timedelta(hours=2)).replace(minute=15))
+        self.derog = G(
+            Derogation, mode='E', zones=[F(num=2)],
+            start_dt = start,
+            end_dt = start + datetime.timedelta(hours=4)
+        )
 
     def test_required_fields(self):
         response = self.client.post(self._url)
@@ -148,7 +159,7 @@ class DerogationFormTest(TestCase):
                              self._req_field_error)
 
     def test_form_valid_with_overriden_start_dt(self):
-        zone = G(Zone)
+        zone = G(Zone, num=1)
         start_initial = "06/06/2015 20:40"
         start_dt = timezone.localtime(timezone.now())
         start_dt += datetime.timedelta(hours=2)
@@ -160,7 +171,7 @@ class DerogationFormTest(TestCase):
             'end_dt': end_dt, 'zones': zone.num, 'mode': mode
         })
         self.assertRedirects(response, reverse('zone_list'))
-        self.assertEqual(Derogation.objects.count(), 1)
+        self.assertEqual(Derogation.objects.count(), 2)
 
     def test_form_valid_with_initial_start_dt(self):
         zone = G(Zone)
@@ -171,7 +182,7 @@ class DerogationFormTest(TestCase):
             'end_dt': end_dt, 'zones': zone.num, 'mode': 'E'
         })
         self.assertRedirects(response, reverse('zone_list'))
-        self.assertEqual(Derogation.objects.count(), 1)
+        self.assertEqual(Derogation.objects.count(), 2)
 
     def test_end_datetime_quarter_hour(self):
         response = self.client.post(self._url, {'end_dt': "30/06/2015 21:03"})
@@ -204,6 +215,49 @@ class DerogationFormTest(TestCase):
         })
         self.assertFormError(
             response, 'form', 'end_dt', self._end_before_start_error)
+
+    def test_conflict_start_datetime_in_other_slot(self):
+        start = timezone.localtime(self.derog.end_dt)
+        start -= datetime.timedelta(minutes=15)
+        end = start + datetime.timedelta(hours=1)
+        start = start.strftime("%d/%m/%Y %H:%M")
+        end = end.strftime("%d/%m/%Y %H:%M")
+        response = self.client.post(self._url, {
+            'start_initial': "11/07/2015 17:58",
+            'zones': self.derog.zones.get().num,
+            'start_dt': start, 'end_dt': end 
+        })
+        self.assertFormError(
+            response, 'form', None, self._conflict_error)
+
+    def test_conflict_end_datetime_in_other_slot(self):
+        end = timezone.localtime(self.derog.start_dt)
+        end += datetime.timedelta(minutes = 15)
+        start = end - datetime.timedelta(hours=1)
+        start = start.strftime("%d/%m/%Y %H:%M")
+        end = end.strftime("%d/%m/%Y %H:%M")
+        response = self.client.post(self._url, {
+            'start_initial': "11/07/2015 17:58",
+            'zones': self.derog.zones.get().num,
+            'start_dt': start, 'end_dt': end 
+        })
+        self.assertFormError(
+            response, 'form', None, self._conflict_error)
+
+    def test_conflict_start_datetime_and_end_datetime_in_other_slot(self):
+        start = timezone.localtime(self.derog.start_dt)
+        start += datetime.timedelta(minutes=15)
+        start = start.strftime("%d/%m/%Y %H:%M")
+        end = timezone.localtime(self.derog.end_dt)
+        end -= datetime.timedelta(minutes=15)
+        end = end.strftime("%d/%m/%Y %H:%M")
+        response = self.client.post(self._url, {
+            'start_initial': "11/07/2015 17:58",
+            'zones': self.derog.zones.get().num,
+            'start_dt': start, 'end_dt': end 
+        })
+        self.assertFormError(
+            response, 'form', None, self._conflict_error)
 
 
 class DerogationDeleteFormTest(TestCase):

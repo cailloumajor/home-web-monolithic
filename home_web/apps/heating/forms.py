@@ -124,6 +124,7 @@ class DerogationForm(forms.ModelForm):
         start_initial = cl_data.get('start_initial')
         start_dt = cl_data.get('start_dt')
         end_dt = cl_data.get('end_dt')
+        zones = cl_data.get('zones')
         if start_initial and start_dt:
             if not start_initial == start_dt:
                 try:
@@ -139,3 +140,11 @@ class DerogationForm(forms.ModelForm):
                 self.add_error('end_dt', forms.ValidationError(
                     "La fin d'effet doit être ultérieure à la prise d'effet"
                 ))
+            elif zones and Derogation.objects.filter(zones__in=zones).filter(
+                (Q(start_dt__lte=start_dt) & Q(end_dt__gte=start_dt)) | \
+                (Q(start_dt__lte=end_dt) & Q(end_dt__gte=end_dt)) | \
+                (Q(start_dt__gte=start_dt) & Q(end_dt__lte=end_dt))
+            ).exists():
+                raise forms.ValidationError(
+                    "Les horaires sont en conflit avec une dérogation existante"
+                )
