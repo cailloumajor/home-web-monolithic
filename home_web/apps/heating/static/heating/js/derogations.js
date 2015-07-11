@@ -27,7 +27,10 @@ function($, form) {
         },
         update: function() {
             var self = this;
-            $('#derog-table-container').load('derogation/', self.arrange);
+            function complete() {
+                self.arrange();
+            };
+            $('#derog-table-container').load('derogation/', complete);
         },
     };
 });
