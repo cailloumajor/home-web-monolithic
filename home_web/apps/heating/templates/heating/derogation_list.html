@@ -18,7 +18,7 @@
         <td>{{ d.creation_dt|date:"d F Y H:i" }}</td>
         <td>{{ d.start_dt|date:"d F Y H:i" }}</td>
         <td>{{ d.end_dt|date:"d F Y H:i" }}</td>
-        <td>{{ d.get_mode_display }}</td>
+        <td class='derog_mode_{{d.mode}}'>{{ d.get_mode_display }}</td>
         {% for z in zone_list %}
           <td><span class="derog-check">
               {% if z in d.zones.all %}X{% endif %}

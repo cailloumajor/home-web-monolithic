@@ -130,3 +130,15 @@ label[for="del-btn"].ui-state-active {
 .outdated-derog {
     opacity: 0.4;
 }
+
+.derog_mode_E {
+    background-color: #B2FF7C;
+}
+
+.derog_mode_H {
+    background-color: #B2B2C9;
+}
+
+.derog_mode_A {
+    background-color: #FFB27C;
+}
