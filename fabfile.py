@@ -27,6 +27,8 @@ EXTCFG_EXCLUDE = (
     'README',
     'config.yaml',
 )
+REMOTE_MANAGE_PATH = '/srv/www/home_web'
+REMOTE_PYTHON_PATH = '/home/home_web/.virtualenvs/home_web/bin'
 
 env.colorize_errors = True
 try:
@@ -119,6 +121,11 @@ def deploy_www():
     )
 
 @task
+def migrate_database():
+    with cd(REMOTE_MANAGE_PATH), path(REMOTE_PYTHON_PATH, behavior='replace'):
+        sudo("python manage.py migrate", user='home_web')
+
+@task
 def deploy_extcfg():
     _test_repo()
     paths = [
@@ -153,4 +160,5 @@ def deploy():
     _django_tests()
     deploy_static()
     deploy_www()
+    migrate_database()
     deploy_extcfg()
