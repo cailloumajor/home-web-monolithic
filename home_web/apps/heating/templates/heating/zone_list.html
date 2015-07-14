@@ -1,6 +1,7 @@
 {% extends "heating/heating_base.html" %}
 
 {% block content %}
+
   <div id="zone-slots-nojs">
   {% for z in zone_list %}
     <div class="zone-slots" id='zone-slots-z{{ z.num }}'>
@@ -42,11 +43,13 @@
     </div>
     {% endfor %}
   </div>
+
   <script type="text/javascript">
     (function() {
         document.querySelector('#zone-slots-nojs').classList.add('hidden');
     })();
   </script>
+
   <div class="show-if-js hidden" id="zone-tabs">
     <ul>
       {% for z in zone_list %}
@@ -62,17 +65,29 @@
     </div>
     {% endfor %}
   </div>
-  <div class="show-if-js hidden" id="del-zone">
-    <button id="del-btn">Suppression</button>
-    <div class="ui-widget ui-state-error ui-corner-all hidden" id="del-ind">
-      <p>
-        <span class="ui-icon ui-icon-alert"></span>
-        Mode suppression
-        <span class="ui-icon ui-icon-alert"></span>
-      </p>
-      <button id="nodel-btn">Annuler</button>
+
+  <span class="show-if-js hidden" id="del-zone">
+    <input id="del-btn" type="checkbox"></input><label for="del-btn">Suppression</label>
+  </span>
+
+  <div id="derogation-list">
+    <h2>Dérogations
+      <a href='{% url 'new_derog' %}'>Nouvelle</a>
+    </h2>
+    <div id="derog-table-container">
+      {% include 'heating/derogation_list.html' %}
     </div>
-  <div id="form-container">
   </div>
+
+  <script type="text/javascript">
+    (function() {
+        el = document.querySelector('#derogation-list');
+        el.classList.add('hidden');
+        el.classList.add('show-if-js');
+    })();
+  </script>
+
+  <div id="form-container"></div>
+
 {% endblock %}
     

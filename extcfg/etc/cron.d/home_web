@@ -1,0 +1,9 @@
+# /etc/cron.d/home_web: crontab entries for home_web server
+
+# Set PATH to use the python interpreter in the home_web virtualenv
+PATH=/home/home_web/.virtualenvs/home_web/bin
+# Directory in which django's manage.py is
+DIR=/srv/www/home_web
+
+# Clear derogations older than 7 days all mondays at 00:00
+0 0 * * 1 home_web ( cd $DIR && python manage.py clearoldderogations 7 )

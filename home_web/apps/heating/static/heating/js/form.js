@@ -1,5 +1,8 @@
-define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
-       function($) {
+define(
+    ['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog',
+     'jquery-multiselect', 'jquery-datetimepicker'],
+    function($)
+{
     return {
         $that: null,
         callback: null,
@@ -24,28 +27,49 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
             case 'slot-form':
                 dialogTitle = 'Ajout / modification de créneau';
                 dialogWidth = 560;
-                $('#mode-choices label').unwrap().unwrap().each(function() {
-                    $(this).before($(this).children('input'));
-                });
-                $('#days, #mode-choices').buttonset();
-                $('#id_start_time, #id_end_time').attr('readonly', 'true').timepicker({
-                    showPeriodLabels: false,
-                    defaultTime: '',
-                    hourText: 'Heures',
-                    minuteText: 'Min.',
-                    myPosition: 'center top',
-                    atPosition: 'center bottom',
-                    minutes: {interval: 15},
-                    showAnim: null,
-                });
+                break;
+            case 'derogation-form':
+                dialogTitle = 'Nouvelle dérogation';
+                dialogWidth = 420;
                 break;
             case 'slot-del-form':
-                dialogTitle = 'Suppression de créneau';
+            case 'derogation-del-form':
+                dialogTitle = 'Confirmer la suppression';
                 dialogWidth = 300;
-                $('#cancel-anchor').remove();
-                this.$that.children('h2').addClass("ui-widget ui-state-highlight ui-corner-all");
                 break;
             }
+            $('#mode-choices label').unwrap().unwrap().each(function() {
+                $(this).before($(this).children('input'));
+            });
+            $('#days, #mode-choices').buttonset();
+            $('#id_start_time, #id_end_time').attr('readonly', 'true').timepicker({
+                showPeriodLabels: false,
+                defaultTime: '',
+                hourText: 'Heures',
+                minuteText: 'Min.',
+                myPosition: 'center top',
+                atPosition: 'center bottom',
+                minutes: {interval: 15},
+                showAnim: null,
+            });
+            $('#id_zones').multiselect({
+                header: false,
+                height: 'auto',
+                minWidth: 110,
+                noneSelectedText: 'Choisir',
+                selectedList: 4,
+            });
+            $('#id_start_dt, #id_end_dt').attr('readonly', 'true').datetimepicker({
+                lang: 'fr',
+                format: 'd/m/Y H:i',
+                step: 15,
+                minDate: 0,
+                defaultSelect: false,
+                dayOfWeekStart: 1,
+            });
+            $('#cancel-anchor').remove();
+            $('h2', this.$that).addClass("ui-widget ui-state-highlight ui-corner-all");
+            // Common part
             $('<input>', {
                 'class': 'form-btn',
                 type: 'button',
@@ -99,6 +123,13 @@ define(['jquery', 'jquery-ui-timepicker', 'jquery-ui/dialog'],
                         break;
                     case 'mode':
                         $ul.appendTo('#mode');
+                        break;
+                    case 'zones':
+                        $ul.appendTo('#zones');
+                        break;
+                    case 'start_dt':
+                    case 'end_dt':
+                        $ul.appendTo('#datetimes');
                         break;
                     }
                 }

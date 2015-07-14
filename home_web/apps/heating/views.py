@@ -1,14 +1,13 @@
 #-*- coding: utf-8 -*-
 
-import datetime
-
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import JsonResponse
+from django.utils import timezone
 
-from .models import Slot, Zone
-from .forms import SlotForm
+from .models import Slot, Zone, Derogation
+from .forms import SlotForm, DerogationForm
 
 class AjaxResponseMixin(object):
     def form_valid(self, form):
@@ -40,6 +39,11 @@ class AjaxResponseMixin(object):
 class ZoneList(ListView):
     model = Zone
 
+    def get_context_data(self, **kwargs):
+        context = super(ZoneList, self).get_context_data(**kwargs)
+        context['derogation_list'] = Derogation.objects.all()
+        return context
+
 class SlotCreate(AjaxResponseMixin, CreateView):
     model = Slot
     form_class = SlotForm
@@ -60,27 +64,34 @@ class SlotDelete(AjaxResponseMixin, DeleteView):
     model = Slot
     success_url = reverse_lazy('zone_list')
 
+class DerogationList(ListView):
+    model = Derogation
+
+    def get_context_data(self, **kwargs):
+        context = super(DerogationList, self).get_context_data(**kwargs)
+        context['zone_list'] = Zone.objects.all()
+        return context
+
+class DerogationCreate(AjaxResponseMixin, CreateView):
+    model = Derogation
+    form_class = DerogationForm
+    success_url = reverse_lazy('zone_list')
+
+    def get_initial(self):
+        initial = super(DerogationCreate, self).get_initial()
+        initial = initial.copy()
+        initial['start_dt'] = timezone.now()
+        initial['start_initial'] = initial['start_dt']
+        return initial
+
+class DerogationDelete(AjaxResponseMixin, DeleteView):
+    model = Derogation
+    success_url = reverse_lazy('zone_list')
+
 class ModeAPI(View):
     http_method_names = ['get']
 
     def get(self, request, *args, **kwargs):
-        errors = []
         data = {}
-        if errors:
-            data['errors'] = errors
-            return JsonResponse(data, status=400)
-        modes = {}
-        now = datetime.datetime.now()
-        day = [
-            'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
-        ][now.weekday()]
-        time = now.time()
-        for zone in Zone.objects.all():
-            try:
-                modes[zone.num] = zone.slot_set.filter(**{day: True}).get(
-                    start_time__lte = time, end_time__gte = time
-                ).mode
-            except:
-                modes[zone.num] = 'C'
-        data['modes'] = modes
+        data['modes'] = Zone.objects.get_modes()
         return JsonResponse(data)

@@ -1,0 +1,27 @@
+{% extends request.is_ajax|yesno:"heating/ajax_form_base.html,heating/heating_base.html" %}
+
+{% block content %}
+  <form action='{{ request.path }}' class="heating-form" id="derogation-form" method="post">
+    {% csrf_token %}
+    {{ form.start_initial }}
+    {{ form.non_field_errors }}
+    <div class="line" id="zones">
+      {{ form.zones.label_tag }}{{ form.zones }}{{ form.zones.errors }}
+    </div>
+    <div class="line" id="datetimes">
+      {{ form.start_dt.label_tag }}{{ form.start_dt }}
+      {{ form.end_dt.label_tag }}{{ form.end_dt }}
+      {{ form.start_dt.errors }}
+      {{ form.end_dt.errors }}
+    </div>
+    <div class="line" id="mode">
+      <label>{{ form.mode.label }}</label>
+      <span id="mode-choices">
+        {{ form.mode }}
+      </span>
+      {{ form.mode.errors }}
+    </div>
+    <input class="form-btn" type="submit">
+  </form>
+{% endblock %}
+

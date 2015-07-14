@@ -2,13 +2,14 @@
 
 import datetime
 import operator
+from functools import reduce
 
+from django import forms
 from django.db.models import Q
 from django.forms import widgets
-from django import forms
+from django.utils import timezone
 
-from .models import Slot
-from functools import reduce
+from .models import Slot, Derogation
 
 def validate_quarter_hour(value):
     if value.minute % 15 != 0:
@@ -91,3 +92,59 @@ class SlotForm(forms.ModelForm):
                 )
 
         return cl_data
+
+class HiddenDateTimeWidget(widgets.DateTimeInput):
+    input_type = 'hidden'
+
+class DerogationForm(forms.ModelForm):
+
+    start_initial = forms.DateTimeField(
+        widget = HiddenDateTimeWidget(format="%d/%m/%Y %H:%M"),
+        required = False
+    )
+
+    class Meta():
+        model = Derogation
+        fields = ['start_initial', 'zones', 'start_dt', 'end_dt', 'mode']
+        widgets = {
+            'start_dt': widgets.DateTimeInput(format="%d/%m/%Y %H:%M"),
+            'end_dt': widgets.DateTimeInput(format="%d/%m/%Y %H:%M"),
+            'mode': widgets.RadioSelect,
+        }
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(DerogationForm, self).__init__(*args, **kwargs)
+        self.fields['start_dt'].input_formats = ["%d/%m/%Y %H:%M"]
+        self.fields['end_dt'].input_formats = ["%d/%m/%Y %H:%M"]
+        self.fields['end_dt'].validators += [validate_quarter_hour]
+
+    def clean(self):
+        cl_data = super(DerogationForm, self).clean()
+        start_initial = cl_data.get('start_initial')
+        start_dt = cl_data.get('start_dt')
+        end_dt = cl_data.get('end_dt')
+        zones = cl_data.get('zones')
+        if start_initial and start_dt:
+            if not start_initial == start_dt:
+                try:
+                    validate_quarter_hour(start_dt)
+                except forms.ValidationError as val_err:
+                    self.add_error('start_dt', val_err)
+                if start_dt < timezone.now():
+                    self.add_error('start_dt', forms.ValidationError(
+                        "La prise d'effet ne doit pas se situer dans le passé"
+                    ))
+        if start_dt and end_dt:
+            if end_dt < start_dt:
+                self.add_error('end_dt', forms.ValidationError(
+                    "La fin d'effet doit être ultérieure à la prise d'effet"
+                ))
+            elif zones and Derogation.objects.filter(zones__in=zones).filter(
+                (Q(start_dt__lte=start_dt) & Q(end_dt__gte=start_dt)) | \
+                (Q(start_dt__lte=end_dt) & Q(end_dt__gte=end_dt)) | \
+                (Q(start_dt__gte=start_dt) & Q(end_dt__lte=end_dt))
+            ).exists():
+                raise forms.ValidationError(
+                    "Les horaires sont en conflit avec une dérogation existante"
+                )

@@ -1,0 +1,39 @@
+<table>
+  <thead><tr>
+      <th>Active</th>
+      <th>Création</th>
+      <th>Prise d'effet</th>
+      <th>Fin d'effet</th>
+      <th>Mode</th>
+      {% for z in zone_list %}
+        <th>Z{{ z.num }}</th>
+      {% endfor %}
+  </tr></thead>
+  <tbody>
+    {% for d in derogation_list %}
+      <tr class='{{ d.outdated|yesno:"outdated-derog," }}'>
+        <td><span class="derog-check">
+            {% if d.active %}X{% endif %}
+        </span></td>
+        <td>{{ d.creation_dt|date:"d F Y H:i" }}</td>
+        <td>{{ d.start_dt|date:"d F Y H:i" }}</td>
+        <td>{{ d.end_dt|date:"d F Y H:i" }}</td>
+        <td class='derog_mode_{{d.mode}}'>{{ d.get_mode_display }}</td>
+        {% for z in zone_list %}
+          <td><span class="derog-check">
+              {% if z in d.zones.all %}X{% endif %}
+          </span></td>
+        {% endfor %}
+        <td class="urls">
+          <a href='{% url 'del_derog' pk=d.pk %}'>Supprimer</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan='{{ zone_list.count|add:5 }}'>
+          Aucune dérogation
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -51,3 +51,19 @@ class ModesAPIURLTests(URLTestMixin, TestCase):
     pattern_name = 'api_mode'
     expected_url = '/heating/api/modes/'
     expected_view = 'ModeAPI'
+
+class DerogationCreateURLTests(URLTestMixin, TestCase):
+    pattern_name = 'new_derog'
+    expected_url = '/heating/derogation/new/'
+    expected_view = 'DerogationCreate'
+
+class DerogationListURLTests(URLTestMixin, TestCase):
+    pattern_name = 'derog_list'
+    expected_url = '/heating/derogation/'
+    expected_view = 'DerogationList'
+
+class DerogationDeleteURLTests(URLTestMixin, TestCase):
+    pattern_name = 'del_derog'
+    pattern_kwargs = {'pk': '1'}
+    expected_url = '/heating/derogation/1/delete/'
+    expected_view = 'DerogationDelete'

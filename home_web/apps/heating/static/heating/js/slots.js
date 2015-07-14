@@ -17,12 +17,12 @@ define(['jquery', 'app/consts', 'app/form', 'jcanvas'],
         $can: null,
         groupName: '',
         delMode: function(set) {
-            var $delInd = $('#del-ind');
-            if (typeof(set) == 'boolean') {
-                $delInd.toggleClass('hidden', !set);
-                $('#del-btn').toggleClass('hidden', set);
+            var $delInd = $('#del-btn');
+            var ret = function() { return $delInd.prop('checked'); };
+            if ((typeof(set) == 'boolean') && (ret() != set)) {
+                $delInd.trigger('click');
             }
-            return ($delInd.length > 0) && !$delInd.hasClass('hidden');
+            return ret();
         },
         days: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
         init: function(zoneSlots) {
