@@ -19,17 +19,17 @@ class ClearOldDerogationsTests(TestCase):
 
     def test_no_argument(self):
         self.assertRaisesRegex(
-            CommandError, "Bad number of arguments, one required.",
+            CommandError, "You must provide a number of days.",
             call_command, self.cmd)
 
     def test_too_much_arguments(self):
         self.assertRaisesRegex(
-            CommandError, "Bad number of arguments, one required.",
+            CommandError, "Error: unrecognized arguments: 2",
             call_command, self.cmd, '1', '2')
 
     def test_bad_argument_type(self):
         self.assertRaisesRegex(
-            CommandError, "Numeric argument required, 'a' given.",
+            CommandError, "Error: argument days: invalid int value: 'a'",
             call_command, self.cmd, 'a')
 
     def test_clear_2_days_old(self):

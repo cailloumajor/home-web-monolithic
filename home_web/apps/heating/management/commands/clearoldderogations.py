@@ -10,18 +10,15 @@ from ...models import Derogation
 
 class Command(BaseCommand):
 
-    args = 'days'
     help = "Removes derogations with end older than given days."
+    missing_args_message = "You must provide a number of days."
 
-    def handle(self, *days, **options):
-        if not len(days) == 1:
-            raise CommandError("Bad number of arguments, one required.")
-        try:
-            days = int(days[0])
-        except ValueError:
-            raise CommandError(
-                "Numeric argument required, '{}' given.".format(days[0]))
-        deadline = timezone.now() - datetime.timedelta(days=days)
+    def add_arguments(self, parser):
+        parser.add_argument('days', type=int)
+
+    def handle(self, **options):
+        days_old = options['days']
+        deadline = timezone.now() - datetime.timedelta(days=days_old)
         qs = Derogation.objects.filter(end_dt__lte=deadline)
         count = qs.count()
         qs.delete()
