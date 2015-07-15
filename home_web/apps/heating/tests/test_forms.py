@@ -23,7 +23,8 @@ class SlotFormTest(TestCase):
     _quar_hour_error = ("Seules les valeurs 00, 15, 30 et 45 "
                         "sont autorisées pour les minutes")
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         G(Slot, zone=F(num=1), mon=True, mode='E',
           start_time=datetime.time(10), end_time=datetime.time(13, 59))
 
@@ -138,10 +139,11 @@ class DerogationFormTest(TestCase):
     _conflict_error = (
         "Les horaires sont en conflit avec une dérogation existante")
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         start = (
             (timezone.now() + datetime.timedelta(hours=2)).replace(minute=15))
-        self.derog = G(
+        cls.derog = G(
             Derogation, mode='E', zones=[F(num=2)],
             start_dt = start,
             end_dt = start + datetime.timedelta(hours=4)
