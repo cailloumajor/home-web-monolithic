@@ -1,15 +1,14 @@
 #-*- coding: utf-8 -*-
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 
 from . import views
 
-api_patterns = patterns('',
+api_patterns = [
     url(r'^modes/$', views.ModeAPI.as_view(), name='api_mode'),
-)
+]
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     url(r'^$', views.ZoneList.as_view(), name='zone_list'),
     url(r'^slot/new/zone_(?P<zone>\d)/$', views.SlotCreate.as_view(),
         name='new_slot'),
@@ -22,4 +21,4 @@ urlpatterns = patterns(
         views.DerogationDelete.as_view(), name='del_derog'
     ),
     url(r'^api/', include(api_patterns)),
-)
+]
