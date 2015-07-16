@@ -81,6 +81,7 @@ def _test_repo():
         abort("Git repository not clean !\n" + result)
 
 def _django_tests():
+    local("python manage.py check")
     local("python -Wall manage.py test")
 
 @task
@@ -122,8 +123,11 @@ def deploy_www():
 
 @task
 def migrate_database():
-    with cd(REMOTE_MANAGE_PATH), path(REMOTE_PYTHON_PATH, behavior='replace'):
-        sudo("python manage.py migrate", user='home_web')
+    with cd(REMOTE_MANAGE_PATH),
+    path(REMOTE_PYTHON_PATH, behavior='replace'),
+    settings(sudo_user='home_web'):
+        sudo("python manage.py migrate")
+        sudo("python manage.py check --deploy")
 
 @task
 def deploy_extcfg():
