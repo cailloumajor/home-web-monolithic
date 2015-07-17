@@ -123,9 +123,9 @@ def deploy_www():
 
 @task
 def migrate_database():
-    with cd(REMOTE_MANAGE_PATH),
-    path(REMOTE_PYTHON_PATH, behavior='replace'),
-    settings(sudo_user='home_web'):
+    with (cd(REMOTE_MANAGE_PATH),
+          path(REMOTE_PYTHON_PATH, behavior='replace'),
+          settings(sudo_user='home_web')):
         sudo("python manage.py migrate")
         sudo("python manage.py check --deploy")
 
