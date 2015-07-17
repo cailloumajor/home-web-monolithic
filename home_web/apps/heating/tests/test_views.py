@@ -45,9 +45,10 @@ class ZoneViewsTest(TestCase):
 
 class SlotViewsTest(TestCase):
 
-    def setUp(self):
-        self._zone = G(Zone)
-        self._slot = G(Slot, zone=self._zone, mode='A')
+    @classmethod
+    def setUpTestData(cls):
+        cls._zone = G(Zone)
+        cls._slot = G(Slot, zone=cls._zone, mode='A')
             
     def test_slot_create_view(self):
         response = self.client.get(

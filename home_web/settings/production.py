@@ -14,7 +14,7 @@ EMAIL_USE_TLS = yjval('email.tls')
 
 ALLOWED_HOSTS = yjval('allowed_hosts')
 
-DEBUG = TEMPLATE_DEBUG = False
+DEBUG = False
 
 DATABASES = {
     'default': {
