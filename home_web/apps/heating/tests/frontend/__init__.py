@@ -105,8 +105,6 @@ class JCanvasElement(object):
 
 class FrontendTestCase(StaticLiveServerTestCase):
 
-    fixtures = ['test_frontend.json']
-
     def __init__(self, *args, **kwargs):
         super(FrontendTestCase, self).__init__(*args, **kwargs)
         self.addTypeEqualityFunc(Color, 'assertColorAlmostEqual')

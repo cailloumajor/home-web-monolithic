@@ -30,9 +30,10 @@ def tearDownModule():
     driver.quit()
 
 
-class HomePageTest(FrontendTestCase):
+class HomePageTestSlots(FrontendTestCase):
 
-    page_class = pages.HomePage
+    fixtures = ['test_slots_frontend.json']
+    page_class = pages.HomePageSlots
     ready_locator = (By.CLASS_NAME, 'show-if-js-done')
 
     def test_title(self):

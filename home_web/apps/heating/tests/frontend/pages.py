@@ -14,7 +14,7 @@ class BasePage(PageObject):
         return self.w.title
 
 
-class HomePage(BasePage):
+class HomePageSlots(BasePage):
     # Page URL
     url = '/heating/'
     # Page elements
