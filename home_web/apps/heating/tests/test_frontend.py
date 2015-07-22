@@ -92,3 +92,12 @@ class HomePageTestSlots(FrontendTestCase):
         self.page.slot_form.submit()
         self.assertEqual(self.page.slot4.width, [120, 120])
         self.assertEqual(self.page.slot4.color, self.page.legend2.color)
+
+
+class HomePageTestDerogations(FrontendTestCase):
+
+    page_class = pages.HomePageDerogations
+    ready_locator = (By.CLASS_NAME, 'show-if-js-done')
+
+    def test_title(self):
+        self.assertRegex(self.page.header.text, r'^Dérogations')

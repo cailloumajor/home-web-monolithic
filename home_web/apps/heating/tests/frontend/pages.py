@@ -41,3 +41,10 @@ class HomePageSlots(BasePage):
     slot4 = JCanvasElement(canvas_z1, 'pk-3')
     slot5 = JCanvasElement(canvas_z2, 'add')
     slot6 = JCanvasElement(canvas_z2, 'pk-4')
+
+
+class HomePageDerogations(BasePage):
+    # Page URL
+    url = '/heating/'
+    # Page elements
+    header = PageElement(css="#derogation-list h2:first-child")
