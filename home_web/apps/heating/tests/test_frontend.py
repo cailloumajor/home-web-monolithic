@@ -156,3 +156,18 @@ class HomePageTestDerogations(FrontendTestCase):
         opacity = float(self.page.rows[2].value_of_css_property('opacity'))
         self.assertEqual(opacity, 1.0)
         self.assertEqual(self.page.columns(self.page.rows[2])[0].text, '')
+
+    def test_zone_1(self):
+        self.assertEqual(self.page.columns(self.page.rows[0])[5].text, 'X')
+        self.assertEqual(self.page.columns(self.page.rows[0])[6].text, '')
+        self.assertEqual(self.page.columns(self.page.rows[0])[7].text, '')
+
+    def test_zone_2(self):
+        self.assertEqual(self.page.columns(self.page.rows[1])[5].text, '')
+        self.assertEqual(self.page.columns(self.page.rows[1])[6].text, 'X')
+        self.assertEqual(self.page.columns(self.page.rows[1])[7].text, '')
+
+    def test_zone_3(self):
+        self.assertEqual(self.page.columns(self.page.rows[2])[5].text, '')
+        self.assertEqual(self.page.columns(self.page.rows[2])[6].text, '')
+        self.assertEqual(self.page.columns(self.page.rows[2])[7].text, 'X')
