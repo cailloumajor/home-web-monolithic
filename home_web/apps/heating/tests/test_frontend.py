@@ -141,3 +141,18 @@ class HomePageTestDerogations(FrontendTestCase):
         self.assertColorAlmostEqual(
             self.page.columns(self.page.rows[2])[4].color,
             self.page.legend[3].color)
+
+    def test_past_derogation(self):
+        opacity = float(self.page.rows[0].value_of_css_property('opacity'))
+        self.assertLess(opacity, 1.0)
+        self.assertEqual(self.page.columns(self.page.rows[0])[0].text, '')
+
+    def test_active_derogation(self):
+        opacity = float(self.page.rows[1].value_of_css_property('opacity'))
+        self.assertEqual(opacity, 1.0)
+        self.assertEqual(self.page.columns(self.page.rows[1])[0].text, 'X')
+
+    def test_future_derogation(self):
+        opacity = float(self.page.rows[2].value_of_css_property('opacity'))
+        self.assertEqual(opacity, 1.0)
+        self.assertEqual(self.page.columns(self.page.rows[2])[0].text, '')
