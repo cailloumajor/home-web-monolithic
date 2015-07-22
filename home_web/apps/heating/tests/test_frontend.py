@@ -130,3 +130,14 @@ class HomePageTestDerogations(FrontendTestCase):
         self.refresh_derogations()
         colspan = self.page.no_derog_cell.get_attribute('colspan')
         self.assertEqual(int(colspan), len(self.page.derog_head_cells))
+
+    def test_mode_colors(self):
+        self.assertColorAlmostEqual(
+            self.page.columns(self.page.rows[0])[4].color,
+            self.page.legend[1].color)
+        self.assertColorAlmostEqual(
+            self.page.columns(self.page.rows[1])[4].color,
+            self.page.legend[2].color)
+        self.assertColorAlmostEqual(
+            self.page.columns(self.page.rows[2])[4].color,
+            self.page.legend[3].color)
