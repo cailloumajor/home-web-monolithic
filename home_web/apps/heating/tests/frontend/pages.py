@@ -48,3 +48,5 @@ class HomePageDerogations(BasePage):
     url = '/heating/'
     # Page elements
     header = PageElement(css="#derogation-list h2:first-child")
+    no_derog_cell = PageElement(id_='no-derogation-cell')
+    derog_head_cells = MultiPageElement(css="#derogation-table th")

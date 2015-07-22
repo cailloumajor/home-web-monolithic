@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import os
+from datetime import timedelta
 
+from django.utils import timezone
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+from django_dynamic_fixture import G, F
+
 from .frontend import pages, FrontendTestCase, JCanvasElementNotFound
+from ..models import Derogation
 
 
 def setUpModule():
@@ -99,5 +104,29 @@ class HomePageTestDerogations(FrontendTestCase):
     page_class = pages.HomePageDerogations
     ready_locator = (By.CLASS_NAME, 'show-if-js-done')
 
+    def setUp(self):
+        now = timezone.now()
+        # Past derogation
+        G(Derogation, mode='E', zones=[F(num=1)],
+          creation_dt=now-timedelta(days=1, hours=2),
+          end_dt=now-timedelta(hours=1))
+        # Active derogation
+        G(Derogation, mode='H', zones=[F(num=2)],
+          creation_dt=now-timedelta(days=1, hours=1),
+          start_dt=now-timedelta(hours=1),
+          end_dt=now+timedelta(hours=1))
+        # Future derogation
+        G(Derogation, mode='A', zones=[F(num=3)],
+          creation_dt=now-timedelta(days=1),
+          start_dt=now+timedelta(hours=1),
+          end_dt=now+timedelta(hours=2))
+        super(HomePageTestDerogations, self).setUp()
+
     def test_title(self):
         self.assertRegex(self.page.header.text, r'^Dérogations')
+
+    def test_no_derogation(self):
+        Derogation.objects.all().delete()
+        self.refresh_derogations()
+        colspan = self.page.no_derog_cell.get_attribute('colspan')
+        self.assertEqual(int(colspan), len(self.page.derog_head_cells))
