@@ -6,6 +6,8 @@ from datetime import timedelta
 from django.utils import timezone
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from django_dynamic_fixture import G, F
 
@@ -121,6 +123,7 @@ class HomePageTestDerogations(FrontendTestCase):
           start_dt=now+timedelta(hours=1),
           end_dt=now+timedelta(hours=2))
         super(HomePageTestDerogations, self).setUp()
+        self.wait = WebDriverWait(self.driver, 2, 0.1)
 
     def test_title(self):
         self.assertRegex(self.page.header.text, r'^Dérogations')
@@ -171,3 +174,11 @@ class HomePageTestDerogations(FrontendTestCase):
         self.assertEqual(self.page.columns(self.page.rows[2])[5].text, '')
         self.assertEqual(self.page.columns(self.page.rows[2])[6].text, '')
         self.assertEqual(self.page.columns(self.page.rows[2])[7].text, 'X')
+
+    def test_derogation_deletion(self):
+        self.assertEqual(len(self.page.rows), 3)
+        self.page.del_btn(self.page.rows[0]).click()
+        self.page.del_form.submit()
+        self.wait.until(
+            EC.invisibility_of_element_located((By.ID, 'derogation-del-form')))
+        self.assertEqual(len(self.page.rows), 2)

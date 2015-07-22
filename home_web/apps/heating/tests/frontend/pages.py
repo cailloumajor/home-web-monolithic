@@ -53,3 +53,5 @@ class HomePageDerogations(BasePage):
     legend = MultiPageElement(css="#can-z1 + .legend .legend-rect")
     rows = MultiPageElement(css="#derogation-table tbody tr")
     columns = MultiPageElement(tag_name='td', context=True)
+    del_btn = PageElement(css="td.urls a", context=True)
+    del_form = PageElement(id_='derogation-del-form')
