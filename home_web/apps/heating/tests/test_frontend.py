@@ -12,7 +12,7 @@ def setUpModule():
     global driver
     remote_host = os.environ.get('REMOTE_WD')
     if remote_host is None:
-        driver = webdriver.PhantomJS()
+        driver = webdriver.PhantomJS(service_args=['--debug=true'])
     else:
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
