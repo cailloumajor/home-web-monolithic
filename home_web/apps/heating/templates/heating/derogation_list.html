@@ -1,4 +1,4 @@
-<table>
+<table id="derogation-table">
   <thead><tr>
       <th>Active</th>
       <th>Création</th>
@@ -30,7 +30,7 @@
       </tr>
       {% empty %}
       <tr>
-        <td colspan='{{ zone_list.count|add:5 }}'>
+        <td colspan='{{ zone_list.count|add:5 }}' id="no-derogation-cell">
           Aucune dérogation
         </td>
       </tr>

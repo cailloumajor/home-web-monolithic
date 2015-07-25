@@ -105,8 +105,6 @@ class JCanvasElement(object):
 
 class FrontendTestCase(StaticLiveServerTestCase):
 
-    fixtures = ['test_frontend.json']
-
     def __init__(self, *args, **kwargs):
         super(FrontendTestCase, self).__init__(*args, **kwargs)
         self.addTypeEqualityFunc(Color, 'assertColorAlmostEqual')
@@ -151,6 +149,12 @@ class FrontendTestCase(StaticLiveServerTestCase):
             comp_color2 = getattr(color2, comp)
             if abs(comp_color1 - comp_color2) > 2:
                 self.fail(msg)
+
+    def refresh_derogations(self):
+        self.driver.execute_script(js.get_script('refresh_derogations'))
+        wait = WebDriverWait(self.driver, 5)
+        el = wait.until(
+            EC.presence_of_element_located((By.ID, 'derogation-table')))
 
 
 def get_webelement_color(self):
