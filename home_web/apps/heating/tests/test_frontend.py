@@ -182,3 +182,27 @@ class HomePageTestDerogations(FrontendTestCase):
         self.wait.until(
             EC.invisibility_of_element_located((By.ID, 'derogation-del-form')))
         self.assertEqual(len(self.page.rows), 2)
+
+    def test_derogation_creation(self):
+        self.assertEqual(len(self.page.rows), 3)
+        self.page.add_btn.click()
+        self.page.zones_multiselect.click()
+        for chk in self.page.zones_checkboxes:
+            chk.click()
+        self.page.start_dt.click()
+        self.wait.until(EC.visibility_of(self.page.start_dtpicker))
+        self.page.next_month(self.page.start_dtpicker).click()
+        self.page.days(self.page.start_dtpicker)[1].click()
+        self.page.times(self.page.start_dtpicker)[1].click()
+        self.page.start_dt.click()
+        self.page.end_dt.click()
+        self.wait.until(EC.visibility_of(self.page.end_dtpicker))
+        self.page.next_month(self.page.end_dtpicker).click()
+        self.page.days(self.page.end_dtpicker)[2].click()
+        self.page.times(self.page.end_dtpicker)[2].click()
+        self.page.end_dt.click()
+        self.page.mode_buttons[1].click()
+        self.page.add_form.submit()
+        self.wait.until(
+            EC.invisibility_of_element_located((By.ID, 'derogation-form')))
+        self.assertEqual(len(self.page.rows), 4)

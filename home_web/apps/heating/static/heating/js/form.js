@@ -59,13 +59,17 @@ define(
                 noneSelectedText: 'Choisir',
                 selectedList: 4,
             });
-            $('#id_start_dt, #id_end_dt').attr('readonly', 'true').datetimepicker({
-                lang: 'fr',
-                format: 'd/m/Y H:i',
-                step: 15,
-                minDate: 0,
-                defaultSelect: false,
-                dayOfWeekStart: 1,
+            $('#id_start_dt, #id_end_dt').attr('readonly', 'true').each(function() {
+                var self = this;
+                $(this).datetimepicker({
+                    id: 'timepicker-' + self.id,
+                    lang: 'fr',
+                    format: 'd/m/Y H:i',
+                    step: 15,
+                    minDate: 0,
+                    defaultSelect: false,
+                    dayOfWeekStart: 1,
+                });
             });
             $('#cancel-anchor').remove();
             $('h2', this.$that).addClass("ui-widget ui-state-highlight ui-corner-all");
