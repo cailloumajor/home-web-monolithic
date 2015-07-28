@@ -1,3 +1,9 @@
+@import url("../jquery-ui.css");
+@import url("../../bower/timepicker/jquery.ui.timepicker.css");
+@import url("../../bower/jquery-ui-multiselect-widget/jquery.multiselect.css");
+@import url("../../bower/datetimepicker/jquery.datetimepicker.css");
+@import url("heating_forms.css");
+
 .hidden, .no-close .ui-dialog-titlebar-close {
     display: none;
 }
