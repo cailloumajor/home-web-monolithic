@@ -64,7 +64,7 @@ $('#test-id').css('background-color', 'white');
 // END SCRIPT
 
 // SCRIPT refresh_derogations
-require(['app/derogations'], function(derog) {
+require(['derogations'], function(derog) {
     derog.update();
 });
 // END SCRIPT

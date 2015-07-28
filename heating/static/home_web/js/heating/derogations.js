@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'app/form', 'jquery-ui/button'],
+    ['jquery', 'form', 'jquery-ui/button'],
 function($, form) {
     return {
         init: function() {

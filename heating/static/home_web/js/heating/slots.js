@@ -1,4 +1,4 @@
-define(['jquery', 'app/consts', 'app/form', 'jcanvas'], 
+define(['jquery', 'consts', 'form', 'jcanvas'],
        function($, CST, form) {
 
     function timeToScale(strTime) {

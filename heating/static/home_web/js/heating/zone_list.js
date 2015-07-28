@@ -1,7 +1,12 @@
 require.config({
-    baseUrl: '/static/home_web/js/lib',
     paths: {
-        'app': '../heating',
+        'domReady': '../../bower/domReady/domReady',
+        'jquery': '../../bower/jquery/dist/jquery',
+        'jcanvas': '../../bower/jcanvas/jcanvas',
+        'jquery-ui': '../../bower/jquery.ui/ui',
+        'jquery-ui-timepicker': '../../bower/timepicker/jquery.ui.timepicker',
+        'jquery-multiselect': '../../bower/jquery-ui-multiselect-widget/src/jquery.multiselect',
+        'jquery-datetimepicker': '../../bower/datetimepicker/jquery.datetimepicker',
     },
     shim: {
         'jcanvas': ['jquery'],
@@ -13,7 +18,7 @@ require.config({
 
 require(
     [
-        'jquery', 'app/init_canvas', 'app/slots', 'app/derogations',
+        'jquery', 'init_canvas', 'slots', 'derogations',
         'jquery-ui/tabs', 'jquery-ui/button', 'jquery-ui/effect-fade',
         'domReady!'
     ],

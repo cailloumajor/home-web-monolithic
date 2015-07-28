@@ -1,4 +1,4 @@
-define(['jquery', 'app/consts', 'jcanvas'],
+define(['jquery', 'consts', 'jcanvas'],
        function($, CST) {
     return function($can) {
         for (var i=0; i<=96; i++) {
