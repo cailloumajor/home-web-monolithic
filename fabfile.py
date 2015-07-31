@@ -25,6 +25,7 @@ WWW_EXCLUDE = (
     'requirements_*.txt',
     'package.json',
     'npm-shrinkwrap.json',
+    'bower.json',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
