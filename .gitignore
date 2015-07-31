@@ -4,3 +4,4 @@ fab_hosts
 .coverage
 htmlcov/
 ghostdriver.log
+node_modules/

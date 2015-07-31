@@ -23,6 +23,8 @@ WWW_EXCLUDE = (
     'tests/',
     'requirements*.in',
     'requirements_*.txt',
+    'package.json',
+    'npm-shrinkwrap.json',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (

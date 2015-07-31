@@ -1,0 +1,9 @@
+{
+  "name": "home_web",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "bower": "",
+    "requirejs": ""
+  }
+}
