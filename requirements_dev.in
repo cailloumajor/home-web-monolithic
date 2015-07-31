@@ -1,0 +1,12 @@
+# Development pip requirements
+
+-r requirements_base.in
+
+ipython
+nodeenv
+pyinotify
+coverage
+selenium
+page_objects
+django-dynamic-fixture
+pip-tools

@@ -1,0 +1,7 @@
+# Production pip requirements
+
+-r requirements_base.in
+
+psycopg2
+gunicorn
+setproctitle

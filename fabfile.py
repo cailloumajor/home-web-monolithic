@@ -21,6 +21,8 @@ WWW_EXCLUDE = (
     'static/',
     '.coveragerc',
     'tests/',
+    'requirements*.in',
+    'requirements_*.txt',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
