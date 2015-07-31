@@ -21,7 +21,6 @@ WWW_EXCLUDE = (
     'static/',
     '.coveragerc',
     'tests/',
-    '/tools/',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
@@ -44,12 +43,10 @@ class TemporaryStaticDir(object):
         'src',
         'build',
     )
-    TOOLS_DIR = './tools'
 
     def __init__(self):
         self.root_dir = tempfile.mkdtemp()
         os.chmod(self.root_dir, 0o755)
-        shutil.copytree(self.TOOLS_DIR, self.tools_dir)
         for sd in self.SUBDIRS:
             os.mkdir(os.path.join(self.root_dir, sd))
 
@@ -95,11 +92,10 @@ def collect_static():
 @task
 def build_static():
     collect_static()
-    with lcd(env.static.tools_dir):
-        local("node r.js -o app.build.js appDir={0} dir={1}".format(
-            os.path.relpath(env.static.src_dir, env.static.tools_dir),
-            os.path.relpath(env.static.build_dir, env.static.tools_dir)
-        ))
+    with lcd(env.static.src_dir):
+        local("node home_web.static-build.js")
+    shutil.copytree(os.path.join(env.static.src_dir, 'admin'),
+                    os.path.join(env.static.build_dir, 'admin'))
 
 @task
 def deploy_static():

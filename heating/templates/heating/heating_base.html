@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% load staticfiles %}
+{% load home_web_extras %}
 
 {% block title %}Gestion du chauffage{% endblock %}
 
 {% block assets %}
   <link rel="stylesheet" href='{% static "home_web/css/heating/zone_list.css" %}' type="text/css" charset="utf-8">
-  <script data-main='{% static "home_web/js/heating/zone_list.js" %}' src='{% static "home_web/bower/requirejs/require.js" %}'></script>
+  {% static "home_web/js/heating/zone_list.js" as entry_point_url %}
+  {% static "home_web/bower/requirejs/require.js" as requirejs_url %}
+  {% requirejs entry_point_url requirejs_url %}
 {% endblock %}
 

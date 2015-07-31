@@ -101,3 +101,7 @@ TEMPLATES = [
 
 DDF_DEFAULT_DATA_FIXTURE = 'global_sequential'
 DDF_VALIDATE_ARGS = True
+
+# RequireJS templatetag settings
+
+REQUIREJS_PROD = False

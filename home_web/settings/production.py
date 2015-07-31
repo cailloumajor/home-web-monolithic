@@ -29,3 +29,4 @@ DATABASES = {
 
 STATIC_ROOT = yjval('static_root')
 
+REQUIREJS_PROD = True
