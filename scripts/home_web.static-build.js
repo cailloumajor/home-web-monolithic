@@ -28,6 +28,8 @@ var configs = [
     },
 ];
 
+process.chdir(process.argv[2]);
+
 configs.forEach(function (config, index, array) {
     config.logLevel = 0;
     requirejs.optimize(config, function (buildResponse) {

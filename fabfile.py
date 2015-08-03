@@ -97,8 +97,7 @@ def collect_static():
 @task
 def build_static():
     collect_static()
-    with lcd(env.static.src_dir):
-        local("node home_web.static-build.js")
+    local("node scripts/home_web.static-build.js {}".format(env.static.src_dir))
     shutil.copytree(os.path.join(env.static.src_dir, 'admin'),
                     os.path.join(env.static.build_dir, 'admin'))
 
