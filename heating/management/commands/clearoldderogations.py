@@ -21,6 +21,9 @@ class Command(BaseCommand):
         deadline = timezone.now() - datetime.timedelta(days=days_old)
         qs = Derogation.objects.filter(end_dt__lte=deadline)
         count = qs.count()
+        removed_list = [str(d) for d in qs]
         qs.delete()
 
-        self.stdout.write("{} derogation(s) removed.".format(count))
+        self.stdout.write("{} derogation(s) removed :".format(count))
+        for r in removed_list:
+            self.stdout.write(r)

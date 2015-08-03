@@ -33,19 +33,29 @@ class ClearOldDerogationsTests(TestCase):
             call_command, self.cmd, 'a')
 
     def test_clear_2_days_old(self):
+        derogs = []
         for d in range(1, 4):
             end = timezone.now() - datetime.timedelta(days=d, minutes=5)
-            G(Derogation, mode='E', end_dt=end)
+            derogs.append(G(Derogation, mode='E', end_dt=end))
         out = StringIO()
         call_command(self.cmd, '2', stdout=out)
-        self.assertIn('2', out.getvalue())
+        cmd_out = out.getvalue()
+        self.assertIn("2 derogation(s) removed", cmd_out)
+        self.assertNotIn(str(derogs[0]), cmd_out)
+        self.assertIn(str(derogs[1]), cmd_out)
+        self.assertIn(str(derogs[2]), cmd_out)
         self.assertEqual(Derogation.objects.count(), 1)
 
     def test_clear_3_days_old(self):
+        derogs = []
         for d in range(1, 4):
             end = timezone.now() - datetime.timedelta(days=d, minutes=5)
-            G(Derogation, mode='H', end_dt=end)
+            derogs.append(G(Derogation, mode='H', end_dt=end))
         out = StringIO()
         call_command(self.cmd, '3', stdout=out)
-        self.assertIn('1', out.getvalue())
+        cmd_out = out.getvalue()
+        self.assertIn("1 derogation(s) removed", cmd_out)
+        self.assertNotIn(str(derogs[0]), cmd_out)
+        self.assertNotIn(str(derogs[1]), cmd_out)
+        self.assertIn(str(derogs[2]), cmd_out)
         self.assertEqual(Derogation.objects.count(), 2)
