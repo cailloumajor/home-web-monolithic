@@ -1,0 +1,7 @@
+#!/bin/bash
+# This hook is sourced after this virtualenv is activated.
+# To install, symlink inside the virtualenv's bin directory.
+
+project_dir="$(cat "$VIRTUAL_ENV/$VIRTUALENVWRAPPER_PROJECT_FILENAME")"
+PATH="$project_dir/node_modules/.bin:$PATH"
+export PATH
