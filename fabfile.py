@@ -27,6 +27,7 @@ WWW_EXCLUDE = (
     'npm-shrinkwrap.json',
     'bower.json',
     '/scripts/home_web.static-build.js',
+    '/scripts/postactivate',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
