@@ -26,6 +26,7 @@ WWW_EXCLUDE = (
     'package.json',
     'npm-shrinkwrap.json',
     'bower.json',
+    '/scripts/home_web.static-build.js',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
