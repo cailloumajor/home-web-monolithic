@@ -30,3 +30,8 @@ DATABASES = {
 STATIC_ROOT = yjval('static_root')
 
 REQUIREJS_PROD = True
+
+PILOTWIRE_CONTROLER = {
+    'address': yjval('pilotwire.address'),
+    'port': yjval('pilotwire.port'),
+}

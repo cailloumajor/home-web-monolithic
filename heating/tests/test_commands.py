@@ -59,3 +59,19 @@ class ClearOldDerogationsTests(TestCase):
         self.assertNotIn(str(derogs[1]), cmd_out)
         self.assertIn(str(derogs[2]), cmd_out)
         self.assertEqual(Derogation.objects.count(), 2)
+
+
+class SetPilotwireTest(TestCase):
+
+    cmd = 'setpilotwire'
+
+    def test_argument_passing(self):
+        self.assertRaisesRegex(
+            CommandError, "Error: unrecognized arguments: test",
+            call_command, self.cmd, 'test')
+
+    def test_no_xmlrpc_server(self):
+        self.assertRaisesRegex(
+            CommandError,
+            "ConnectionRefusedError: \[Errno 111\] Connection refused",
+            call_command, self.cmd)

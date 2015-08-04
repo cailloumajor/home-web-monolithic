@@ -105,3 +105,10 @@ DDF_VALIDATE_ARGS = True
 # RequireJS templatetag settings
 
 REQUIREJS_PROD = False
+
+# Pilotwire controler settings
+
+PILOTWIRE_CONTROLER = {
+    'address': 'localhost',
+    'port': 8888,
+}
