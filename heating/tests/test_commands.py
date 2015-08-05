@@ -8,9 +8,10 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.utils.six import StringIO
 
-from django_dynamic_fixture import G
+from django_dynamic_fixture import G, F
 
-from ..models import Derogation
+from ..models import Slot, Derogation
+from ..pilotwire.test import TestServer
 
 
 class ClearOldDerogationsTests(TestCase):
@@ -75,3 +76,37 @@ class SetPilotwireTest(TestCase):
             CommandError,
             "ConnectionRefusedError: \[Errno 111\] Connection refused",
             call_command, self.cmd)
+
+    def test_order_with_no_zone(self):
+        out = StringIO()
+        expected_out = "{'1': 'C', '2': 'C', '3': 'C', '4': 'C'}"
+        with TestServer():
+            call_command(self.cmd, stdout=out)
+        self.assertIn(expected_out, out.getvalue())
+
+    def test_order_with_four_zones(self):
+        out = StringIO()
+        expected_out = "{'1': 'E', '2': 'H', '3': 'A', '4': 'E'}"
+        now = timezone.now()
+        local_now = timezone.localtime(now)
+        time_start =  (local_now - datetime.timedelta(minutes=2)).time()
+        time_end = (local_now + datetime.timedelta(minutes=2)).time()
+        today = [
+            'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'
+        ][local_now.weekday()]
+        dt_start = now -datetime.timedelta(minutes=2)
+        dt_end = now + datetime.timedelta(minutes=2)
+        for i in range(1, 4):
+            kwargs = {
+                'zone': F(num=i),
+                'mode': ('E', 'H', 'A')[i-1],
+                'start_time': time_start,
+                'end_time': time_end,
+                today: True,
+            }
+            G(Slot, **kwargs)
+        G(Derogation, zones=[F(num=4)], mode='E',
+          start_dt=dt_start, end_dt=dt_end)
+        with TestServer():
+            call_command(self.cmd, stdout=out)
+        self.assertIn(expected_out, out.getvalue())
