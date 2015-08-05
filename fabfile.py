@@ -9,6 +9,7 @@ from fabric.api import *
 from fabric.colors import green, yellow
 from fabric.contrib import console, project
 
+
 STATIC_RSYNC_MODULE = 'home_web-static'
 WWW_RSYNC_MODULE = 'home_web-www'
 WWW_EXCLUDE = (
@@ -28,6 +29,7 @@ WWW_EXCLUDE = (
     'bower.json',
     '/scripts/home_web.static-build.js',
     '/scripts/postactivate',
+    '/heating/pilotwire/',
 )
 EXTCFG_DIR = 'extcfg'
 EXTCFG_EXCLUDE = (
@@ -36,13 +38,25 @@ EXTCFG_EXCLUDE = (
 )
 REMOTE_MANAGE_PATH = '/srv/www/home_web'
 REMOTE_PYTHON_PATH = '/home/home_web/.virtualenvs/home_web/bin'
+PILOTWIRE_PATHS = {
+    'local_dir': 'heating/pilotwire/',
+    'remote_dir': '/srv/pilotwire',
+}
+PILOTWIRE_EXCLUDE = (
+    '__pycache__/',
+    '/__init__.py',
+    'test.py',
+)
 
 env.colorize_errors = True
+
+fab_roles = {}
 try:
-    with open('fab_hosts', 'r') as f:
-        env.hosts = f.read().splitlines()
+    execfile('fab_roles.py', fab_roles)
+    env.roledefs = fab_roles['roledefs']
 except IOError:
     pass
+
 
 class TemporaryStaticDir(object):
 
@@ -104,6 +118,7 @@ def build_static():
                     os.path.join(env.static.build_dir, 'admin'))
 
 @task
+@roles('webserver')
 def deploy_static():
     build_static()
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
@@ -115,6 +130,7 @@ def deploy_static():
     env.static.delete()
 
 @task
+@roles('webserver')
 def deploy_www():
     # Prepend a colon to remote dir to use rsync daemon (host::module/path)
     _rsync_project(
@@ -125,6 +141,7 @@ def deploy_www():
     )
 
 @task
+@roles('webserver')
 def migrate_database():
     with cd(REMOTE_MANAGE_PATH), \
          path(REMOTE_PYTHON_PATH, behavior='replace'), \
@@ -133,6 +150,7 @@ def migrate_database():
         sudo("python manage.py check --deploy")
 
 @task
+@roles('webserver')
 def deploy_extcfg():
     _test_repo()
     paths = [
@@ -146,7 +164,14 @@ def deploy_extcfg():
             sudo("cp {src} {dst}".format(
                 src=path, dst=os.path.join(os.sep, path)
             ))
-    sudo("kill -HUP $(cat /run/nginx.pid)")
+    sudo("kill -HUP $(cat /run/{nginx,supervisord}.pid)")
+
+@task
+@roles('pilotwire')
+def deploy_pilotwire():
+    project.rsync_project(
+        exclude=PILOTWIRE_EXCLUDE, delete=True, extra_opts='--delete-excluded',
+        **PILOTWIRE_PATHS)
     sudo("kill -HUP $(cat /run/supervisord.pid)")
 
 @task
@@ -165,7 +190,8 @@ def coverage():
 def deploy():
     _test_repo()
     _django_tests()
-    deploy_static()
-    deploy_www()
-    migrate_database()
-    deploy_extcfg()
+    execute(deploy_static)
+    execute(deploy_www)
+    execute(migrate_database)
+    execute(deploy_extcfg)
+    execute(deploy_pilotwire)
