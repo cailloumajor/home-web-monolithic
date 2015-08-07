@@ -112,3 +112,20 @@ PILOTWIRE_CONTROLER = {
     'address': 'localhost',
     'port': 8888,
 }
+
+# Logging configuration dictionary
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+    },
+    'loggers': {
+        'setpilotwire': {
+            'handlers': ['null'],
+        },
+    },
+}
