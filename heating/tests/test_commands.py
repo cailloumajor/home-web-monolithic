@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import logging
+from os import devnull
 
 from django.test import TestCase
 from django.utils import timezone
@@ -10,8 +12,9 @@ from django.utils.six import StringIO
 
 from django_dynamic_fixture import G, F
 
-from ..models import Slot, Derogation
+from ..models import Slot, Derogation, PilotwireLog
 from ..pilotwire.test import TestServer
+from ..log import PilotwireHandler
 
 
 class ClearOldDerogationsTests(TestCase):
@@ -110,3 +113,51 @@ class SetPilotwireTest(TestCase):
         with TestServer():
             call_command(self.cmd, stdout=out)
         self.assertIn(expected_out, out.getvalue())
+
+
+class SetPilotwireLoggingTest(TestCase):
+
+    cmd = 'setpilotwire'
+
+    @classmethod
+    def setUpClass(cls):
+        cls.out = open(devnull, 'w')
+        logger = logging.getLogger('setpilotwire')
+        logger.setLevel(logging.INFO)
+        handler = PilotwireHandler(logLength=10)
+        handler.setLevel(logging.INFO)
+        logger.addHandler(handler)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.out.close()
+
+    def test_success_logging(self):
+        with TestServer():
+            call_command(self.cmd, stdout=self.out)
+        self.assertEqual(PilotwireLog.objects.count(), 1)
+        log_entry = PilotwireLog.objects.all()[0]
+        self.assertEqual(log_entry.level, 'INFO')
+        self.assertIn("Modes set on pilotwire controler", log_entry.message)
+
+    def test_error_logging(self):
+        try:
+            call_command(self.cmd, stdout=self.out)
+        except CommandError:
+            pass
+        self.assertEqual(PilotwireLog.objects.count(), 1)
+        log_entry = PilotwireLog.objects.all()[0]
+        self.assertEqual(log_entry.level, 'ERROR')
+        self.assertIn("ConnectionRefusedError: [Errno 111] Connection refused",
+                      log_entry.message)
+
+    def test_log_max_length(self):
+        for i in range(10):
+            G(PilotwireLog)
+        self.assertEqual(PilotwireLog.objects.count(), 10)
+        try:
+            call_command(self.cmd, stdout=self.out)
+        except CommandError:
+            pass
+        self.assertEqual(PilotwireLog.objects.count(), 10)
+        self.assertEqual(PilotwireLog.objects.all()[0].level, 'ERROR')
