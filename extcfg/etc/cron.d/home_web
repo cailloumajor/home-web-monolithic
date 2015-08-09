@@ -7,3 +7,6 @@ DIR=/srv/www/home_web
 
 # Clear derogations older than 7 days all mondays at 00:00
 0 0 * * 1 home_web ( cd $DIR && python manage.py clearoldderogations 7 )
+
+# Set pilotwire modes every 15 minutes
+*/15 * * * * home_web ( cd $DIR && python manage.py setpilotwire ) >/dev/null 2>&1
