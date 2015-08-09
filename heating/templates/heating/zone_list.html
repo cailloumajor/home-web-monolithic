@@ -55,15 +55,18 @@
       {% for z in zone_list %}
       <li><a href='#tab-z{{ z.num }}'>Zone {{ z.num }}</a></li>
       {% endfor %}
+      <li><a href="#tab-log">Journal</a></li>
     </ul>
     {% for z in zone_list %}
-    <div id='tab-z{{ z.num }}'>
+    <div class="tab-content" id='tab-z{{ z.num }}'>
       <h2>{{ z.desc }}</h2>
       <canvas class="zone-canvas" id='can-z{{ z.num }}' height="235" width="1025">
         <p class="unsup">Le navigateur ne supporte pas la balise &lt;canvas&gt; !</p>
       </canvas>
     </div>
     {% endfor %}
+    <div class="tab-content" id="tab-log">
+    </div>
   </div>
 
   <span class="show-if-js hidden" id="del-zone">

@@ -55,6 +55,10 @@ main th, main td {
     margin-bottom: 10px;
 }
 
+#zone-tabs .tab-content {
+    height: 290px;
+}
+
 #zone-tabs .ui-tabs-panel {
     padding: 5px;
     text-align: center;
