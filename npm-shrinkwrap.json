@@ -1696,9 +1696,9 @@
       }
     },
     "phantomjs": {
-      "version": "1.9.17",
-      "from": "phantomjs@*",
-      "resolved": "https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.17.tgz",
+      "version": "1.9.18",
+      "from": "phantomjs@1.9.18",
+      "resolved": "https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.18.tgz",
       "dependencies": {
         "adm-zip": {
           "version": "0.4.4",
@@ -1706,19 +1706,23 @@
           "resolved": "https://registry.npmjs.org/adm-zip/-/adm-zip-0.4.4.tgz"
         },
         "fs-extra": {
-          "version": "0.18.4",
-          "from": "fs-extra@>=0.18.0 <0.19.0",
-          "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-0.18.4.tgz",
+          "version": "0.23.1",
+          "from": "fs-extra@>=0.23.1 <0.24.0",
+          "resolved": "https://registry.npmjs.org/fs-extra/-/fs-extra-0.23.1.tgz",
           "dependencies": {
             "graceful-fs": {
-              "version": "3.0.8",
-              "from": "graceful-fs@>=3.0.5 <4.0.0",
-              "resolved": "https://registry.npmjs.org/graceful-fs/-/graceful-fs-3.0.8.tgz"
+              "version": "4.1.2",
+              "from": "graceful-fs@>=4.1.2 <5.0.0"
             },
             "jsonfile": {
               "version": "2.2.1",
-              "from": "jsonfile@>=2.0.0 <3.0.0",
+              "from": "jsonfile@>=2.1.0 <3.0.0",
               "resolved": "https://registry.npmjs.org/jsonfile/-/jsonfile-2.2.1.tgz"
+            },
+            "path-is-absolute": {
+              "version": "1.0.0",
+              "from": "path-is-absolute@>=1.0.0 <2.0.0",
+              "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.0.tgz"
             },
             "rimraf": {
               "version": "2.4.2",
@@ -1781,11 +1785,6 @@
                           "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.1.tgz"
                         }
                       }
-                    },
-                    "path-is-absolute": {
-                      "version": "1.0.0",
-                      "from": "path-is-absolute@>=1.0.0 <2.0.0",
-                      "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.0.tgz"
                     }
                   }
                 }
@@ -1832,7 +1831,8 @@
               "dependencies": {
                 "minimist": {
                   "version": "0.0.8",
-                  "from": "minimist@0.0.8"
+                  "from": "minimist@0.0.8",
+                  "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.8.tgz"
                 }
               }
             },
