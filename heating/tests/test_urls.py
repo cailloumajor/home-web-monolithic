@@ -67,3 +67,8 @@ class DerogationDeleteURLTests(URLTestMixin, TestCase):
     pattern_kwargs = {'pk': '1'}
     expected_url = '/heating/derogation/1/delete/'
     expected_view = 'DerogationDelete'
+
+class PilotwireLogListURLTests(URLTestMixin, TestCase):
+    pattern_name = 'pilotwirelog_list'
+    expected_url = '/heating/pilotwirelog/'
+    expected_view = 'PilotwireLogList'

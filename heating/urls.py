@@ -20,5 +20,7 @@ urlpatterns = [
         r'^derogation/(?P<pk>\d+)/delete/$',
         views.DerogationDelete.as_view(), name='del_derog'
     ),
+    url(r'^pilotwirelog/$', views.PilotwireLogList.as_view(),
+        name='pilotwirelog_list'),
     url(r'^api/', include(api_patterns)),
 ]
