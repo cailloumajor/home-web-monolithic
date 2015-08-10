@@ -152,3 +152,48 @@ label[for="del-btn"].ui-state-active {
 .derog_mode_A {
     background-color: #FFB27C;
 }
+
+#pilotwirelog-container {
+    border: 1px solid #87B6D9;
+    display: inline-block;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+#pilotwirelog-table th {
+    background-color: #87B6D9;
+    border: none;
+    color: white;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    text-transform: uppercase;
+}
+
+#pilotwirelog-table .message-header {
+    width: 400px;
+}
+
+#pilotwirelog-table tbody tr:nth-child(2n) {
+    background-color: rgba(135, 182, 217, 0.2);
+}
+
+#pilotwirelog-table td {
+    border: none;
+    padding: 0px 10px;
+}
+
+#pilotwirelog-table .message-cell {
+    text-align: left;
+}
+
+#pilotwirelog-table .info {
+    color: green;
+}
+
+#pilotwirelog-table .warning {
+    color: orange;
+}
+
+#pilotwirelog-table .error {
+    color: red;
+}

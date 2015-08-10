@@ -42,6 +42,7 @@ class ZoneList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ZoneList, self).get_context_data(**kwargs)
         context['derogation_list'] = Derogation.objects.all()
+        context['pilotwirelog_list'] = PilotwireLog.objects.all()
         return context
 
 class SlotCreate(AjaxResponseMixin, CreateView):

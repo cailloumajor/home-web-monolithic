@@ -1,0 +1,20 @@
+<div id="pilotwirelog-container">
+  <table id="pilotwirelog-table">
+    <thead>
+      <tr>
+        <th>Date/heure</th>
+        <th>Niveau</th>
+        <th class="message-header">Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in pilotwirelog_list %}
+        <tr class='{{ l.level|lower }}'>
+          <td>{{ l.timestamp|date:"Y.m.d H:i:s" }}</td>
+          <td>{{ l.level }}</td>
+          <td class="message-cell">{{ l.message }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
