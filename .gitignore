@@ -1,6 +1,6 @@
 *.pyc
 __pycache__/
-fab_hosts
+fab_roles.py
 .coverage
 htmlcov/
 ghostdriver.log

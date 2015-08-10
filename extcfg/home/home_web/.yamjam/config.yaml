@@ -39,3 +39,10 @@ home_web:
     host: ''
     # ['PORT'] - scalar
     port: ''
+
+  # PILOTWIRE_CONTROLER
+  pilotwire:
+    # ['address'] - scalar
+    address: pilotwire_controler_address
+    # ['port'] - integer
+    port: 8888

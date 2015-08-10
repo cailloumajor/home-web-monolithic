@@ -30,3 +30,26 @@ DATABASES = {
 STATIC_ROOT = yjval('static_root')
 
 REQUIREJS_PROD = True
+
+PILOTWIRE_CONTROLER = {
+    'address': yjval('pilotwire.address'),
+    'port': yjval('pilotwire.port'),
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'pilotwire': {
+            'level': 'INFO',
+            'class': 'heating.log.PilotwireHandler',
+            'logLength': 500,
+        },
+    },
+    'loggers': {
+        'setpilotwire': {
+            'handlers': ['pilotwire'],
+            'level': 'INFO',
+        },
+    },
+}

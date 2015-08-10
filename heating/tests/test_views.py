@@ -13,7 +13,7 @@ from django.utils import timezone
 
 from django_dynamic_fixture import G, F
 
-from ..models import Zone, Slot, Derogation
+from ..models import Zone, Slot, Derogation, PilotwireLog
 
 class ZoneViewsTest(TestCase):
 
@@ -164,3 +164,12 @@ class DerogationViewsTest(TestCase):
         response = self.client.get(reverse('del_derog', kwargs={'pk':derog.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, str(derog).replace('>', '&gt;'))
+
+class PilotwireLogViewsTest(TestCase):
+
+    def test_pilotwirelog_list_view(self):
+        log_entry = G(PilotwireLog)
+        response = self.client.get(reverse('pilotwirelog_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, log_entry.level)
+        self.assertContains(response, log_entry.message)

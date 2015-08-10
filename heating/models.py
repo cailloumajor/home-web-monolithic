@@ -87,3 +87,21 @@ class Derogation(ModeBase):
 
     def outdated(self):
         return self.__class__.objects.filter(pk=self.pk).is_outdated().exists()
+
+
+class PilotwireLog(models.Model):
+    timestamp = models.DateTimeField(verbose_name="date/heure",
+                                     auto_now_add=True)
+    level = models.CharField(verbose_name="niveau", max_length=10)
+    message = models.TextField()
+
+    class Meta():
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        msg = (self.message[:30] + '...' if len(self.message) > 30
+               else self.message)
+        return "%s - %s - %s" % (
+            timezone.localtime(self.timestamp).strftime("%Y.%m.%d %H:%M:%S"),
+            self.level, msg
+        )

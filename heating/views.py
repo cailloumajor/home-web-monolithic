@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import JsonResponse
 from django.utils import timezone
 
-from .models import Slot, Zone, Derogation
+from .models import Slot, Zone, Derogation, PilotwireLog
 from .forms import SlotForm, DerogationForm
 
 class AjaxResponseMixin(object):
@@ -42,6 +42,7 @@ class ZoneList(ListView):
     def get_context_data(self, **kwargs):
         context = super(ZoneList, self).get_context_data(**kwargs)
         context['derogation_list'] = Derogation.objects.all()
+        context['pilotwirelog_list'] = PilotwireLog.objects.all()
         return context
 
 class SlotCreate(AjaxResponseMixin, CreateView):
@@ -87,6 +88,9 @@ class DerogationCreate(AjaxResponseMixin, CreateView):
 class DerogationDelete(AjaxResponseMixin, DeleteView):
     model = Derogation
     success_url = reverse_lazy('zone_list')
+
+class PilotwireLogList(ListView):
+    model = PilotwireLog
 
 class ModeAPI(View):
     http_method_names = ['get']

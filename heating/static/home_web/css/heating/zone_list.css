@@ -55,6 +55,10 @@ main th, main td {
     margin-bottom: 10px;
 }
 
+#zone-tabs .tab-content {
+    height: 290px;
+}
+
 #zone-tabs .ui-tabs-panel {
     padding: 5px;
     text-align: center;
@@ -147,4 +151,71 @@ label[for="del-btn"].ui-state-active {
 
 .derog_mode_A {
     background-color: #FFB27C;
+}
+
+#pilotwirelog-container {
+    display: inline-block;
+    height: 100%;
+}
+
+#pilotwirelog-table {
+    border: 1px solid #87B6D9;
+}
+
+#pilotwirelog-table th {
+    border: none;
+    color: white;
+    padding: 2px 10px;
+    text-transform: uppercase;
+}
+
+#pilotwirelog-table thead {
+    background-color: #87B6D9;
+    display: block;
+}
+
+#pilotwirelog-table tbody {
+    display: block;
+    height: 270px;
+    overflow-y: scroll;
+}
+
+#pilotwirelog-table thead tr th:nth-child(1),
+#pilotwirelog-table tbody tr:first-child td:nth-child(1) {
+    width: 115px;
+}
+
+#pilotwirelog-table thead tr th:nth-child(2),
+#pilotwirelog-table tbody tr:first-child td:nth-child(2) {
+    width: 60px;
+}
+
+#pilotwirelog-table thead tr th:nth-child(3),
+#pilotwirelog-table tbody tr:first-child td:nth-child(3) {
+    width: 500px;
+}
+
+#pilotwirelog-table tbody tr:nth-child(2n) {
+    background-color: rgba(135, 182, 217, 0.2);
+}
+
+#pilotwirelog-table td {
+    border: none;
+    padding: 0px 10px;
+}
+
+#pilotwirelog-table .message-cell {
+    text-align: left;
+}
+
+#pilotwirelog-table .info {
+    color: green;
+}
+
+#pilotwirelog-table .warning {
+    color: orange;
+}
+
+#pilotwirelog-table .error {
+    color: red;
 }
