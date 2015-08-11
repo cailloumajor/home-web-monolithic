@@ -18,13 +18,16 @@ class Command(BaseCommand):
     help = "Set modes outputs on pilotwire controler"
 
     def handle(self, **options):
+        try:
+            xmlrpc_url = 'http://{host}:{port}/'.format(
+                host = settings.PILOTWIRE_CONTROLER['address'],
+                port = settings.PILOTWIRE_CONTROLER['port'],
+            )
+        except AttributeError:
+            return
+
         # Get current modes dict for all existing zones
         modes = Zone.objects.get_modes()
-
-        xmlrpc_url = 'http://{host}:{port}/'.format(
-            host = settings.PILOTWIRE_CONTROLER['address'],
-            port = settings.PILOTWIRE_CONTROLER['port'],
-        )
 
         try:
             # Pass modes to pilotwire controler by XML-RPC

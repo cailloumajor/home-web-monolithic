@@ -4,7 +4,7 @@ import datetime
 import logging
 from os import devnull
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -15,6 +15,9 @@ from django_dynamic_fixture import G, F
 from ..models import Slot, Derogation, PilotwireLog
 from ..pilotwire.test import TestServer
 from ..log import PilotwireHandler
+
+
+PILOTWIRE_TEST_SERVER_PORT = 8888
 
 
 class ClearOldDerogationsTests(TestCase):
@@ -65,6 +68,10 @@ class ClearOldDerogationsTests(TestCase):
         self.assertEqual(Derogation.objects.count(), 2)
 
 
+@override_settings(PILOTWIRE_CONTROLER={
+    'address': 'localhost',
+    'port': PILOTWIRE_TEST_SERVER_PORT,
+})
 class SetPilotwireTest(TestCase):
 
     cmd = 'setpilotwire'
@@ -83,7 +90,7 @@ class SetPilotwireTest(TestCase):
     def test_order_with_no_zone(self):
         out = StringIO()
         expected_out = "{'1': 'C', '2': 'C', '3': 'C', '4': 'C'}"
-        with TestServer():
+        with TestServer(PILOTWIRE_TEST_SERVER_PORT):
             call_command(self.cmd, stdout=out)
         self.assertIn(expected_out, out.getvalue())
 
@@ -110,17 +117,22 @@ class SetPilotwireTest(TestCase):
             G(Slot, **kwargs)
         G(Derogation, zones=[F(num=4)], mode='E',
           start_dt=dt_start, end_dt=dt_end)
-        with TestServer():
+        with TestServer(PILOTWIRE_TEST_SERVER_PORT):
             call_command(self.cmd, stdout=out)
         self.assertIn(expected_out, out.getvalue())
 
 
+@override_settings(PILOTWIRE_CONTROLER={
+    'address': 'localhost',
+    'port': PILOTWIRE_TEST_SERVER_PORT,
+})
 class SetPilotwireLoggingTest(TestCase):
 
     cmd = 'setpilotwire'
 
     @classmethod
     def setUpClass(cls):
+        super(SetPilotwireLoggingTest, cls).setUpClass()
         cls.out = open(devnull, 'w')
         logger = logging.getLogger('setpilotwire')
         logger.setLevel(logging.INFO)
@@ -131,9 +143,10 @@ class SetPilotwireLoggingTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.out.close()
+        super(SetPilotwireLoggingTest, cls).tearDownClass()
 
     def test_success_logging(self):
-        with TestServer():
+        with TestServer(PILOTWIRE_TEST_SERVER_PORT):
             call_command(self.cmd, stdout=self.out)
         self.assertEqual(PilotwireLog.objects.count(), 1)
         log_entry = PilotwireLog.objects.all()[0]

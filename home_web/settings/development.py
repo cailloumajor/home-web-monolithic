@@ -106,13 +106,6 @@ DDF_VALIDATE_ARGS = True
 
 REQUIREJS_PROD = False
 
-# Pilotwire controler settings
-
-PILOTWIRE_CONTROLER = {
-    'address': 'localhost',
-    'port': 8888,
-}
-
 # Logging configuration dictionary
 
 LOGGING = {

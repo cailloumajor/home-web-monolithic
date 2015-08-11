@@ -16,9 +16,8 @@ class TestingControler(BaseControler):
 
 class TestServerThread(Thread):
 
-    def __init__(self):
+    def __init__(self, port):
         super(TestServerThread, self).__init__()
-        port = settings.PILOTWIRE_CONTROLER['port']
         self.server = SimpleXMLRPCServer(('', port), logRequests=False)
         self.server.register_instance(TestingControler())
 
@@ -33,8 +32,8 @@ class TestServerThread(Thread):
 
 class TestServer(object):
 
-    def __init__(self):
-        self.thread = TestServerThread()
+    def __init__(self, port):
+        self.thread = TestServerThread(port)
 
     def __enter__(self):
         self.thread.start()
