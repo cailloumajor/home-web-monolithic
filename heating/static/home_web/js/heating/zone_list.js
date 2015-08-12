@@ -25,7 +25,12 @@ require(
     function($, initCanvas, slots, derog)
 {
     $.ajaxSetup({timeout:5000});
-    $('#zone-tabs').tabs();
+    $('#zone-tabs').tabs({
+        beforeActivate: function (event, ui) {
+            if (ui.newTab[0].id == 'log-tab')
+                $('body').addClass('no-spinner');
+        },
+    });
     $('.zone-canvas').each(function() {
         initCanvas($(this));
     });
@@ -40,8 +45,13 @@ require(
     derog.init();
     $body = $('body');
     $(document).on({
-        ajaxStart: function() {$body.addClass('loading');},
-        ajaxStop: function() {$body.removeClass('loading');},
+        ajaxStart: function() {
+            if (!$body.hasClass('no-spinner'))
+                $body.addClass('loading');
+        },
+        ajaxStop: function() {
+            $body.removeClass('loading no-spinner');
+        },
     });
     $('.show-if-js').show({
         effect: 'fade',
