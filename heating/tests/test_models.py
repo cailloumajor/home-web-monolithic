@@ -15,7 +15,7 @@ class ZoneModelTest(TestCase):
         zone = N(Zone)
         self.assertEqual(str(zone), 'Z{}'.format(zone.num))
 
-    def test_is_active_queryset_method(self):
+    def test_get_modes_queryset_method(self):
         wdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
         now = timezone.localtime(timezone.now())
         z1 = G(Zone, num=1)
