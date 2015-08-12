@@ -174,3 +174,20 @@ class SetPilotwireLoggingTest(TestCase):
             pass
         self.assertEqual(PilotwireLog.objects.count(), 10)
         self.assertEqual(PilotwireLog.objects.all()[0].level, 'ERROR')
+
+    def test_command_fired_by_derogation_signals(self):
+        now = timezone.now()
+        G(Derogation, mode='E',
+          start_dt=now-datetime.timedelta(minutes=2),
+          end_dt=now+datetime.timedelta(minutes=2))
+        self.assertEqual(PilotwireLog.objects.count(), 2)
+        self.assertIn(
+            "Active derogation created, going to set pilotwire modes",
+            PilotwireLog.objects.all()[1].message
+        )
+        Derogation.objects.last().delete()
+        self.assertEqual(PilotwireLog.objects.count(), 4)
+        self.assertIn(
+            "Active derogation removed, going to set pilotwire modes",
+            PilotwireLog.objects.all()[1].message
+        )

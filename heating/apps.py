@@ -7,3 +7,6 @@ class HeatingConfig(AppConfig):
 
     name = 'heating'
     verbose_name = "Gestion du chauffage"
+
+    def ready(self):
+        from . import signals
