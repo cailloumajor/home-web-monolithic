@@ -91,7 +91,7 @@ class Derogation(ModeBase):
 
 class PilotwireLog(models.Model):
     timestamp = models.DateTimeField(verbose_name="date/heure",
-                                     auto_now_add=True)
+                                     auto_now_add=True, db_index=True)
     level = models.CharField(verbose_name="niveau", max_length=10)
     message = models.TextField()
 
