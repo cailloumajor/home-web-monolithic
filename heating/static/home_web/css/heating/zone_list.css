@@ -150,6 +150,11 @@ label[for="del-btn"].ui-state-active {
     background-color: #FFB27C;
 }
 
+#pilotwirelog-loading {
+    color: #87B6D9;
+    margin-top: 120px;
+}
+
 #pilotwirelog-container {
     display: inline-block;
     height: 100%;

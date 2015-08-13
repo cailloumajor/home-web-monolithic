@@ -30,6 +30,14 @@ require(
             if (ui.newTab[0].id == 'log-tab')
                 $('body').addClass('no-spinner');
         },
+        beforeLoad: function (event, ui) {
+            ui.panel.empty().append(
+                $('<h1>', {
+                    id: 'pilotwirelog-loading',
+                    text: 'CHARGEMENT...',
+                })
+            );
+        },
     });
     $('.zone-canvas').each(function() {
         initCanvas($(this));
