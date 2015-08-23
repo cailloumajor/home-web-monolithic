@@ -13,15 +13,15 @@ echo "Starting $NAME as $(whoami)"
 
 # Calculate number of workers
 if [ -x /usr/bin/nproc ]; then
-    WORKERS=$(( $(/usr/bin/nproc) * 2 + 1 ))
+    THREADS=$(( $(/usr/bin/nproc) * 2 + 1 ))
 else
-    WORKERS=3
+    THREADS=3
 fi
 
 # Run Gunicorn
 exec $GUNICORN \
      --name $NAME \
-     --workers $WORKERS \
+     --threads $THREADS \
      --bind "unix:${SOCK_PID_DIR}/${SOCKFILE}" \
      --pid "${SOCK_PID_DIR}/${PIDFILE}" \
      --log-file - \
