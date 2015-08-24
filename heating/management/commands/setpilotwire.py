@@ -17,6 +17,15 @@ class Command(BaseCommand):
 
     help = "Set modes outputs on pilotwire controler"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--async',
+            action='store_true',
+            dest='async',
+            default=False,
+            help="Command ran asynchronously"
+        )
+
     def handle(self, **options):
         try:
             xmlrpc_url = 'http://{host}:{port}/'.format(
@@ -42,9 +51,13 @@ class Command(BaseCommand):
                     )
         except CommandError as cmderr:
             logger.error(cmderr)
-            raise cmderr
+            if options['async']:
+                return
+            else:
+                raise cmderr
 
         success_msg = "Modes set on pilotwire controler : {}".format(
             pformat(xrresp))
-        self.stdout.write(success_msg)
+        if not options['async']:
+            self.stdout.write(success_msg)
         logger.info(success_msg)

@@ -54,6 +54,8 @@ LOGGING = {
     },
 }
 
+RQ_ACTIVE = True
+
 RQ_QUEUES = {
     'default': yjval('rq_queue')
 }

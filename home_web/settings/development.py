@@ -121,10 +121,15 @@ LOGGING = {
         'setpilotwire': {
             'handlers': ['null'],
         },
+        'rq.worker': {
+            'handlers': ['null'],
+        },
     },
 }
 
 # django-rq configuration - dummy for development
+
+RQ_ACTIVE = False
 
 RQ_QUEUES = {
     'default': {
