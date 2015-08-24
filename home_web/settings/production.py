@@ -53,3 +53,7 @@ LOGGING = {
         },
     },
 }
+
+RQ_QUEUES = {
+    'default': yjval('rq_queue')
+}
