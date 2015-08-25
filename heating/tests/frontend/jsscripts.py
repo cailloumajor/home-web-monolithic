@@ -40,5 +40,3 @@ class JSScript(object):
 
 
 external_javascript = JSScript('scripts.js')
-
-__all__ = [external_javascript]
