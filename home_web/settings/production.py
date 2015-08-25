@@ -39,16 +39,31 @@ PILOTWIRE_CONTROLER = {
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'rq_console': {
+            'format': "%(asctime)s %(message)s",
+            'datefmt': "%Y.%m.%d %H:%M:%S",
+        },
+    },
     'handlers': {
         'pilotwire': {
             'level': 'INFO',
             'class': 'heating.log.PilotwireHandler',
             'logLength': 500,
         },
+        'rq_console': {
+            'level': 'INFO',
+            'class': 'rq.utils.ColorizingStreamHandler',
+            'formatter': 'rq_console',
+        },
     },
     'loggers': {
         'setpilotwire': {
             'handlers': ['pilotwire'],
+            'level': 'INFO',
+        },
+        'rq.worker': {
+            'handlers': ['rq_console'],
             'level': 'INFO',
         },
     },
