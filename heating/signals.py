@@ -24,4 +24,4 @@ def derogation_active_receiver(sender, **kwargs):
     action = 'created' if 'created' in kwargs else 'removed'
     logger.info(
         "Active derogation {}, going to set pilotwire modes".format(action))
-    django_rq.enqueue(call_command, 'setpilotwire', async=True)
+    django_rq.enqueue(call_command, 'setpilotwire', async=True, result_ttl=0)
