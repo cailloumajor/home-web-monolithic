@@ -11,6 +11,10 @@ from django.core.management.base import CommandError
 from django.utils.six import StringIO
 
 from django_dynamic_fixture import G, F
+from redislite import Redis
+import redislite.patch
+from rq import SimpleWorker
+import django_rq
 
 from ..models import Slot, Derogation, PilotwireLog
 from ..pilotwire.test import TestServer
@@ -18,6 +22,7 @@ from ..log import PilotwireHandler
 
 
 PILOTWIRE_TEST_SERVER_PORT = 8888
+REDIS_DB_PATH = '/tmp/redis-home_web.db'
 
 
 class ClearOldDerogationsTests(TestCase):
@@ -174,3 +179,28 @@ class SetPilotwireLoggingTest(TestCase):
             pass
         self.assertEqual(PilotwireLog.objects.count(), 10)
         self.assertEqual(PilotwireLog.objects.all()[0].level, 'ERROR')
+
+    @override_settings(RQ_ACTIVE=True)
+    def test_command_fired_by_derogation_signals(self):
+        Redis(REDIS_DB_PATH).flushdb()
+        redislite.patch.patch_redis(REDIS_DB_PATH)
+        queue = django_rq.get_queue()
+        worker = SimpleWorker(queue, connection=queue.connection)
+        now = timezone.now()
+        G(Derogation, mode='E',
+          start_dt=now-datetime.timedelta(minutes=2),
+          end_dt=now+datetime.timedelta(minutes=2))
+        worker.work(burst=True)
+        self.assertEqual(PilotwireLog.objects.count(), 2)
+        self.assertIn(
+            "Active derogation created, going to set pilotwire modes",
+            PilotwireLog.objects.all()[1].message
+        )
+        Derogation.objects.last().delete()
+        worker.work(burst=True)
+        self.assertEqual(PilotwireLog.objects.count(), 4)
+        self.assertIn(
+            "Active derogation removed, going to set pilotwire modes",
+            PilotwireLog.objects.all()[1].message
+        )
+        redislite.patch.unpatch_redis()

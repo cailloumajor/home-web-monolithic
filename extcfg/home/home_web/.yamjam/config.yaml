@@ -46,3 +46,12 @@ home_web:
     address: pilotwire_controler_address
     # ['port'] - integer
     port: 8888
+
+  # RQ_QUEUES['default']
+  rq_queue:
+    # Unix socket path - scalar
+    UNIX_SOCKET_PATH: /run/redis/redis.sock
+    # DB number - integer
+    DB: 0
+    # Default timeout (seconds) - integer
+    DEFAULT_TIMEOUT: 60

@@ -21,6 +21,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_rq',
     'heating',
 )
 
@@ -120,5 +121,20 @@ LOGGING = {
         'setpilotwire': {
             'handlers': ['null'],
         },
+        'rq.worker': {
+            'handlers': ['null'],
+        },
     },
+}
+
+# django-rq configuration - dummy for development
+
+RQ_ACTIVE = False
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': '',
+        'PORT': 0,
+        'DB': 0,
+    }
 }

@@ -5,3 +5,4 @@ fab_roles.py
 htmlcov/
 ghostdriver.log
 node_modules/
+redis.log

@@ -83,10 +83,11 @@ class Derogation(ModeBase):
         )
 
     def active(self):
-        return self.__class__.objects.filter(pk=self.pk).is_active().exists()
+        now = timezone.now()
+        return (self.start_dt <= now and self.end_dt >= now)
 
     def outdated(self):
-        return self.__class__.objects.filter(pk=self.pk).is_outdated().exists()
+        return self.end_dt < timezone.now()
 
 
 class PilotwireLog(models.Model):
