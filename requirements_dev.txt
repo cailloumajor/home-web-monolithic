@@ -9,7 +9,7 @@ coverage==3.7.1
 decorator==4.0.2          # via ipython, traitlets
 django-dynamic-fixture==1.8.5
 django-rq==0.8.0
-django==1.8.3
+django==1.8.4
 first==2.0.1              # via pip-tools
 ipython-genutils==0.1.0   # via traitlets
 ipython==4.0.0

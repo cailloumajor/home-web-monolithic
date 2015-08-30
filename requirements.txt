@@ -6,12 +6,12 @@
 #
 click==5.1                # via rq
 django-rq==0.8.0
-django==1.8.3
+django==1.8.4
 gunicorn==19.3.0
 psycopg2==2.6.1
 pytz==2015.4
 pyyaml==3.11              # via yamjam
 redis==2.10.3             # via rq
 rq==0.5.4                 # via django-rq
-setproctitle==1.1.8
+setproctitle==1.1.9
 yamjam==0.1.7
