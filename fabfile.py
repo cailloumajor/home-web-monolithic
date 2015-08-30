@@ -36,8 +36,8 @@ EXTCFG_EXCLUDE = (
     'README',
     'config.yaml',
 )
-REMOTE_MANAGE_PATH = '/srv/www/home_web'
-REMOTE_PYTHON_PATH = '/home/home_web/.virtualenvs/home_web/bin'
+REMOTE_PROJECT_ROOT = '/srv/www/home_web'
+REMOTE_VENV_BIN_DIR = '/home/home_web/.virtualenvs/home_web/bin'
 PILOTWIRE_PATHS = {
     'local_dir': 'heating/pilotwire/',
     'remote_dir': '/srv/pilotwire',
@@ -142,10 +142,12 @@ def deploy_www():
 
 @task
 @roles('webserver')
-def migrate_database():
-    with cd(REMOTE_MANAGE_PATH), \
-         path(REMOTE_PYTHON_PATH, behavior='replace'), \
-         settings(sudo_user='home_web'):
+def webserver_virtualenv_work():
+    with cd(REMOTE_PROJECT_ROOT), \
+         settings(sudo_user='home_web'), \
+         prefix("source {}".format(
+             os.path.join(REMOTE_VENV_BIN_DIR, 'activate'))):
+        sudo("pip-sync", pty=False)
         sudo("python manage.py migrate")
         sudo("python manage.py check --deploy")
 
@@ -192,6 +194,6 @@ def deploy():
     _django_tests()
     execute(deploy_static)
     execute(deploy_www)
-    execute(migrate_database)
+    execute(webserver_virtualenv_work)
     execute(deploy_extcfg)
     execute(deploy_pilotwire)

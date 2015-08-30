@@ -2,3 +2,4 @@ Django < 1.9
 yamjam
 pytz
 django-rq
+pip-tools

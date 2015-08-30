@@ -9,5 +9,4 @@ coverage
 selenium
 page_objects
 django-dynamic-fixture
-pip-tools
 redislite
