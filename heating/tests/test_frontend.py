@@ -186,6 +186,8 @@ class HomePageTestDerogations(FrontendTestCase):
     def test_derogation_creation(self):
         self.assertEqual(len(self.page.rows), 3)
         self.page.add_btn.click()
+        self.wait.until(EC.visibility_of_element_located(
+            (By.ID, 'derogation-form')))
         self.page.zones_multiselect.click()
         for chk in self.page.zones_checkboxes:
             chk.click()
