@@ -36,5 +36,6 @@ configs.forEach(function (config, index, array) {
         // noop
     }, function (error) {
         console.error(error.toString());
+        process.exit(1);
     });
 });
