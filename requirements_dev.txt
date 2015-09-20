@@ -15,20 +15,20 @@ ipython-genutils==0.1.0   # via traitlets
 ipython==4.0.0
 jinja2==2.8               # via redislite
 markupsafe==0.23          # via jinja2
-nodeenv==0.13.3
+nodeenv==0.13.6
 page-objects==1.1.0
-path.py==8.1              # via pickleshare
+path.py==8.1.1            # via pickleshare
 pexpect==3.3              # via ipython
 pickleshare==0.5          # via ipython
 pip-tools==1.1.4
-psutil==3.1.1             # via redislite
+psutil==3.2.1             # via redislite
 pyinotify==0.9.6
 pytz==2015.4
 pyyaml==3.11              # via yamjam
 redis==2.10.3             # via redislite, rq
 redislite==1.0.248
 rq==0.5.5                 # via django-rq
-selenium==2.47.1
+selenium==2.47.3
 simplegeneric==0.8.1      # via ipython
 six==1.9.0                # via django-dynamic-fixture, pip-tools
 traitlets==4.0.0          # via ipython
